@@ -1,0 +1,1942 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- flow-rebuild template (Growth Audit, v3: + walkthrough video, phone view/QR, localization, paywall today vs proposed). Replace every double-brace placeholder, everything between
+     the SCREENS markers, and the CONTENT json. Rules that brand-check.py enforces are marked RULE.
+     Reference builds: eddieatadapty.github.io/datacamp-flow-rebuild-v2 · bterzic123.github.io/planner5d-flow-rebuild-v2 -->
+<title>BandLab Growth Audit</title>
+<meta name="description" content="Five ideas to turn more BandLab users into subscribers, each built into a clickable version of BandLab's own onboarding. Prepared by Adapty.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- the APP's font (brand.json fonts, or the closest Google family) + a mono if the app shows code -->
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* BRAND:START — the only place the APP's colours are written as literals. RULE: every value here is
+   copied from brand.json / a sampled pixel of the app's own screens; never "improved". Used only inside the phone. */
+:root{
+  --b-primary:#23232d;      /* dark pill buttons, selected chips (sampled) */
+  --b-primary-ink:#ffffff;
+  --b-bg:#fdfdfd;           /* onboarding background (sampled) */
+  --b-surface:#f1f2f7;      /* chips, bottom band (sampled) */
+  --b-ink:#23232d;
+  --b-ink2:#64646a;         /* sub text (sampled) */
+  --b-line:#e1e5ee;         /* social pills, dividers (sampled) */
+  --b-accent2:#ffaf13;      /* gold: paywall CTA, selected plan (bandlab.com) */
+  --b-gold:#ffaf13;
+  --b-goldfill:#342304;     /* selected plan fill (sampled) */
+  --b-red:#f12c18;          /* brand red: icon tiles, badges (bandlab.com) */
+  --b-dk:#020003;           /* Membership / Beats background (sampled) */
+  --b-dk2:#191b24;          /* radio, chips on dark (sampled) */
+  --b-dkline:#373538;       /* plan card border (sampled) */
+  --b-dkink2:#8b8b93;       /* sub text on dark (sampled) */
+  --b-grad:linear-gradient(180deg,#020003,#020003);
+  --b-radius:12px;
+  --b-pill:999px;
+  --b-font:'Figtree',-apple-system,system-ui,sans-serif;
+  --b-mono:ui-monospace,monospace;
+}
+/* BRAND:END */
+/* A second app family (e.g. a mono for code) is applied HERE, never in SCREENS css (brand-check allows only
+   var(--b-font) there). Prefix with .scr so it beats the screens' font shorthands, e.g.:
+   .scr .code,.scr .instr code{font-family:var(--b-mono)} */
+
+/* ================= the audit page — Adapty's, not the app's. Light, Apple-style. ================= */
+:root{
+  color-scheme:light;
+  --st-ground:#f5f5f7; --st-card:#ffffff; --st-ink:#1d1d1f; --st-ink2:#6e6e73; --st-ink3:#86868b;
+  --st-hair:rgba(0,0,0,.09); --st-link:#0066cc;
+  --st-accent:#23232d;      /* dark brand colour of the APP: buttons, the outcome band */
+  --st-hi:#ffaf13;          /* bright brand colour of the APP: outcome numbers on the band, idea dots */
+  --st-mark:rgba(255,175,19,.55); /* --st-hi at ~.5 alpha: the highlighter under impact numbers */
+  --st-font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+html,body{margin:0}
+body{background:var(--st-ground);color:var(--st-ink);font-family:var(--st-font);-webkit-font-smoothing:antialiased;font-size:17px;line-height:1.47}
+.au-wrap{max-width:1080px;margin:0 auto;padding-inline:22px}
+a{color:var(--st-link)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--st-link);outline-offset:3px;border-radius:6px}
+mark{background:linear-gradient(transparent 62%,var(--st-mark) 62%,var(--st-mark) 92%,transparent 92%);color:inherit;padding:0 .04em}
+
+/* nav */
+.au-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(245,245,247,.8);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--st-hair)}
+.au-nav-in{max-width:1080px;margin:0 auto;padding-inline:22px;height:52px;display:flex;align-items:center;gap:26px}
+.au-brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.au-brand img{width:26px;height:26px;border-radius:7px;flex:none}
+.au-brand span{font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+.au-brand small{font-size:15px;font-weight:400;color:var(--st-ink2)}
+.au-nav a{font-size:13px;color:var(--st-ink);text-decoration:none;opacity:.82}
+.au-nav a:hover{opacity:1}
+@media (max-width:560px){.au-nav a.au-opt{display:none}.au-brand small{display:none}}
+
+/* hero */
+.au-top-hero{text-align:center;padding-top:clamp(56px,9vw,96px);overflow:hidden;position:relative}
+.au-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--st-ink);margin:0 0 14px}
+.au-eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-display{font-size:clamp(60px,12vw,120px);line-height:.98;font-weight:700;letter-spacing:-.05em;margin:0}
+.au-lede{font-size:clamp(23px,3.4vw,34px);line-height:1.16;font-weight:600;letter-spacing:-.022em;max-width:760px;margin:22px auto 0;text-wrap:balance}
+.au-lede span{color:var(--st-ink2)}
+.au-byline{font-size:14px;color:var(--st-ink3);margin:18px 0 0}
+.au-ctas{display:flex;gap:26px;justify-content:center;align-items:center;margin-top:30px;flex-wrap:wrap}
+.au-btn{display:inline-block;background:var(--st-accent);color:#fff;border-radius:980px;padding:12px 23px;font-size:17px;font-weight:500;text-decoration:none;border:0;cursor:pointer}
+.au-btn:hover{filter:brightness(1.25)}
+.au-lnk{background:none;border:0;padding:0;color:var(--st-link);font-size:17px;text-decoration:none;cursor:pointer}
+.au-lnk::after{content:"\00a0›"}
+.au-lnk:hover{text-decoration:underline}
+.au-phones{display:flex;justify-content:center;align-items:flex-start;margin-top:clamp(40px,6vw,64px);height:clamp(300px,52vw,560px)}
+.au-hp{flex:none;border:0;padding:0;background:none;cursor:pointer;width:27%;max-width:290px;margin:0 -2.5%;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.au-hp img{display:block;width:100%;height:auto;filter:drop-shadow(0 28px 50px rgba(0,0,0,.2))}
+.au-hp.au-c{width:31%;max-width:330px;z-index:2}
+.au-hp.au-l{transform:translateY(12%) rotate(-5deg)}
+.au-hp.au-r{transform:translateY(12%) rotate(5deg)}
+.au-hp.au-l:hover{transform:translateY(9%) rotate(-5deg)}.au-hp.au-r:hover{transform:translateY(9%) rotate(5deg)}.au-hp.au-c:hover{transform:translateY(-3%)}
+
+/* sections */
+.au-sec{padding-block:clamp(72px,10vw,120px)}
+.au-sec.au-white{background:var(--st-card)}
+.au-kicker{font-size:15px;font-weight:600;color:var(--st-ink2);margin:0 0 12px}
+.au-h2{font-size:clamp(34px,5.2vw,56px);line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:0;text-wrap:balance}
+.au-h2 span{color:var(--st-ink3)}
+.au-split{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,6vw,80px);align-items:end}
+.au-split p{margin:0;font-size:clamp(17px,1.7vw,21px);line-height:1.45;color:var(--st-ink2);letter-spacing:-.01em}
+.au-split p b{color:var(--st-ink);font-weight:600}
+.au-split p + p{margin-top:16px}
+.au-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:clamp(48px,7vw,80px);border-top:1px solid var(--st-hair)}
+.au-stat{padding:28px 20px 0 0}
+.au-stat b{display:block;font-size:clamp(40px,5.5vw,64px);font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.au-stat span{display:block;font-size:15px;color:var(--st-ink2);margin-top:10px;max-width:22ch}
+.au-notes{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px);margin-top:clamp(48px,7vw,72px)}
+.au-note h3{font-size:19px;font-weight:600;letter-spacing:-.015em;margin:0 0 8px}
+.au-note p{margin:0;font-size:15.5px;line-height:1.5;color:var(--st-ink2)}
+.au-note .au-ic{width:36px;height:36px;border-radius:10px;background:var(--st-ground);display:grid;place-items:center;margin-bottom:16px}
+.au-note .au-ic svg{width:19px;height:19px;stroke:var(--st-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ideas */
+.au-ideas-h{margin-bottom:clamp(32px,5vw,48px)}
+.au-list{background:var(--st-card);border-radius:28px;padding-inline:clamp(20px,4vw,44px)}
+.au-idea{display:grid;grid-template-columns:56px 1fr 220px;gap:20px;align-items:start;padding-block:clamp(26px,3.5vw,36px);border-top:1px solid var(--st-hair)}
+.au-idea:first-child{border-top:0}
+.au-idea .au-num{font-size:15px;font-weight:600;color:var(--st-ink3);font-variant-numeric:tabular-nums;padding-top:6px}
+.au-idea h3{font-size:clamp(21px,2.4vw,26px);line-height:1.2;font-weight:600;letter-spacing:-.022em;margin:0 0 8px}
+.au-idea p{margin:0 0 12px;font-size:17px;line-height:1.5;color:var(--st-ink2);max-width:58ch}
+.au-idea p code{font:600 15px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--st-ink);background:var(--st-ground);padding:2px 7px;border-radius:6px}
+.au-idea .au-lnk{font-size:15px}
+.au-imp{text-align:right}
+.au-imp .au-v{font-size:clamp(30px,3.6vw,40px);font-weight:700;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums;color:var(--st-accent)}
+.au-imp .au-l{font-size:13.5px;color:var(--st-ink2);margin-top:8px}
+.au-band{margin-top:20px;background:var(--st-accent);color:#fff;border-radius:28px;padding:clamp(32px,5vw,56px);display:grid;grid-template-columns:1fr auto;gap:clamp(28px,5vw,64px);align-items:center}
+.au-band .au-k{font-size:15px;font-weight:600;color:rgba(255,255,255,.62);margin:0 0 10px}
+.au-band h3{font-size:clamp(24px,3vw,32px);line-height:1.18;font-weight:600;letter-spacing:-.022em;margin:0;text-wrap:balance}
+.au-band .au-fn{font-size:13px;line-height:1.5;color:rgba(255,255,255,.55);margin:16px 0 0;max-width:52ch}
+.au-nums{display:flex;gap:clamp(28px,4vw,48px)}
+.au-nums small{display:block;font-size:13px;color:rgba(255,255,255,.62)}
+.au-nums b{display:block;font-size:clamp(48px,6.5vw,76px);font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-hi);font-variant-numeric:tabular-nums;margin:4px 0 8px}
+.au-nums span{font-size:14px;color:rgba(255,255,255,.8)}
+.au-band .au-btn{background:var(--st-hi);color:var(--st-accent);font-weight:600;margin-top:26px}
+
+/* prototype */
+.au-proto-h{text-align:center;max-width:720px;margin:0 auto}
+.au-proto-h p{font-size:clamp(17px,1.7vw,21px);color:var(--st-ink2);margin:14px 0 0}
+.au-seg{display:flex;gap:4px;justify-content:center;margin:clamp(28px,4vw,40px) auto 0;padding:4px;background:var(--st-ground);border-radius:980px;width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.au-seg::-webkit-scrollbar{display:none}
+.au-chip{flex:none;display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--st-ink2);font-size:13.5px;font-weight:500;padding:8px 14px;border-radius:980px;cursor:pointer;white-space:nowrap}
+.au-chip:hover{color:var(--st-ink)}
+.au-chip.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.au-chip i{font-style:normal;font-size:11px;font-weight:700;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--st-hi);color:var(--st-accent)}
+.au-stage{display:grid;grid-template-columns:auto minmax(0,420px);gap:clamp(32px,6vw,72px);justify-content:center;align-items:center;margin-top:clamp(28px,4vw,44px)}
+.phone{width:390px;height:844px;border-radius:56px;padding:10px;background:#0b0d10;box-shadow:0 0 0 1.5px #3a3d42,0 40px 90px rgba(0,0,0,.25);max-width:calc(100vw - 44px)}
+.phone-in{position:relative;width:100%;height:100%;border-radius:46px;overflow:hidden;background:var(--b-bg)}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:34px;border-radius:20px;background:#000;z-index:9}
+.sbar{position:absolute;top:0;left:0;right:0;height:52px;display:flex;justify-content:space-between;align-items:center;padding:4px 32px 0;font:600 15px -apple-system,system-ui,sans-serif;color:var(--b-ink);z-index:8;pointer-events:none}
+.au-pn{background:var(--st-ground);border-radius:28px;padding:clamp(26px,3.5vw,38px)}
+.au-pn-k{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--st-ink)}
+.au-pn-k i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-pn-k.au-ctx{color:var(--st-ink2)}.au-pn-k.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-pn-t{font-size:clamp(24px,2.6vw,30px);line-height:1.12;font-weight:700;letter-spacing:-.028em;margin:10px 0 14px;text-wrap:balance}
+.au-pn-h{margin:0;font-size:17px;line-height:1.55;color:var(--st-ink2)}
+.au-pn-h b{color:var(--st-ink);font-weight:600}
+.au-pn-o{margin-top:24px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-pn-o .au-lab{font-size:13px;font-weight:600;color:var(--st-ink3)}
+.au-pn-o .au-val{font-size:clamp(38px,4.4vw,50px);font-weight:700;letter-spacing:-.04em;line-height:1.05;color:var(--st-accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.au-pn-o .au-sub{font-size:14px;color:var(--st-ink2);margin-top:4px}
+.au-pn-a{margin:18px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-pn-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:28px;padding-top:18px;border-top:1px solid var(--st-hair);font-size:13px;color:var(--st-ink3)}
+.au-pn-nav button{background:var(--st-card);border:0;border-radius:980px;padding:8px 15px;font-size:14px;font-weight:500;color:var(--st-ink);cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.au-pn-nav button:disabled{opacity:.35;cursor:default}
+.au-hint{text-align:center;font-size:14px;color:var(--st-ink3);margin:22px 0 0}
+
+/* footer */
+.au-foot{padding-block:56px 72px;border-top:1px solid var(--st-hair)}
+.au-foot details{border-bottom:1px solid var(--st-hair);padding-bottom:18px}
+.au-foot summary{cursor:pointer;font-size:17px;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.au-foot summary::-webkit-details-marker{display:none}
+.au-foot summary::after{content:"+";font-size:24px;font-weight:300;color:var(--st-ink2)}
+.au-foot details[open] summary::after{content:"−"}
+.au-srcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 48px;margin-top:18px}
+.au-srcs h4{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--st-ink3);margin:18px 0 6px}
+.au-srcs dl{margin:0}.au-srcs dt{font-size:14.5px;font-weight:600;margin-top:10px}
+.au-srcs dd{margin:3px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-fine{font-size:12.5px;line-height:1.6;color:var(--st-ink3);margin:22px 0 0;max-width:80ch}
+.au-cta-line{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:36px}
+.au-cta-line p{margin:0;font-size:clamp(19px,2.2vw,24px);font-weight:600;letter-spacing:-.02em;max-width:34ch}
+
+@media (max-width:900px){
+  .au-split,.au-band{grid-template-columns:1fr}
+  .au-notes{grid-template-columns:1fr}
+  .au-idea{grid-template-columns:40px 1fr}
+  .au-imp{grid-column:2;text-align:left;display:flex;align-items:baseline;gap:10px}
+  .au-imp .au-l{margin:0}
+  .au-imp .au-v{white-space:nowrap}
+  .au-stage{grid-template-columns:1fr;justify-items:center}
+  .au-pn{width:100%;max-width:520px}
+  .au-srcs{grid-template-columns:1fr}
+}
+@media (max-width:560px){.au-stats{grid-template-columns:1fr}.au-stat{padding:22px 0 0}.au-nums{flex-direction:column;gap:18px}}
+
+/* ================= extras (audit side): video, language, phone view + QR, paywall today vs proposed, ?tour ================= */
+[hidden]{display:none!important}
+/* the device never scrolls: off-screen slides would otherwise make it scrollable by focus / scrollIntoView */
+.phone-in,.scr{overflow:clip}
+/* hero: walkthrough link */
+.au-play::before{content:"▶";font-size:.72em;margin-right:7px;position:relative;top:-1px}
+/* video dialog */
+.au-vid{border:0;padding:0;background:transparent;max-width:min(1120px,94vw);width:100%;overflow:visible}
+.au-vid::backdrop{background:rgba(0,0,0,.74);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.au-vid-in{background:#000;border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.au-vid video{display:block;width:100%;aspect-ratio:16/9;background:#000}
+.au-vid-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 4px 0;font-size:14px}
+.au-vid-bar a{color:#fff;opacity:.85}
+.au-vid-x{background:rgba(255,255,255,.16);border:0;color:#fff;border-radius:980px;padding:8px 16px;font-size:14px;cursor:pointer}
+/* language switch */
+.au-langrow{display:flex;justify-content:center;align-items:center;gap:12px;margin:18px 0 0;font-size:13.5px;color:var(--st-ink2);flex-wrap:wrap}
+.au-lsw{display:inline-flex;gap:2px;padding:3px;background:var(--st-ground);border-radius:980px}
+.au-lsw button{border:0;background:none;padding:6px 13px;border-radius:980px;font-size:13.5px;font-weight:500;color:var(--st-ink2);cursor:pointer;white-space:nowrap}
+.au-lsw button.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* QR card (desktop) / full-screen button (phone) */
+.au-qr{display:flex;align-items:center;gap:18px;margin:26px auto 0;max-width:500px;background:var(--st-ground);border-radius:22px;padding:14px 22px 14px 14px}
+.au-qr img{width:112px;height:112px;border-radius:12px;image-rendering:pixelated;flex:none;background:#fff}
+.au-qr b{display:block;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.au-qr p{margin:4px 0 0;font-size:14.5px;line-height:1.45;color:var(--st-ink2)}
+.au-mobw{display:none;text-align:center;margin-top:22px}
+@media (max-width:900px){.au-qr{display:none}.au-mobw{display:block}}
+/* paywall: today vs proposed */
+.au-cmp{display:grid;grid-template-columns:minmax(0,290px) minmax(0,1fr) minmax(0,290px);gap:clamp(24px,4vw,52px);align-items:center;margin-top:clamp(32px,5vw,52px)}
+.au-cmp figure{margin:0;text-align:center}
+.au-cmp figure img{display:block;width:100%;height:auto;filter:drop-shadow(0 24px 44px rgba(0,0,0,.18))}
+.au-cmp figcaption{margin-top:14px;font-size:15px;font-weight:600}
+.au-cmp figcaption span{color:var(--st-ink2);font-weight:400}
+.au-cmp-go{border:0;padding:0;background:none;cursor:pointer;display:block;width:100%;transition:transform .3s}
+.au-cmp-go:hover{transform:translateY(-4px)}
+.au-chg{list-style:none;margin:0;background:var(--st-card);border-radius:24px;padding:4px clamp(18px,2.4vw,28px)}
+.au-chg li{padding:15px 0;border-top:1px solid var(--st-hair)}
+.au-chg li:first-child{border-top:0}
+.au-chg h4{margin:0 0 7px;font-size:16px;font-weight:600;letter-spacing:-.01em;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.au-chg h4 i{font-style:normal;font-size:12px;font-weight:600;color:var(--st-accent);background:var(--st-mark);border-radius:6px;padding:2px 8px;white-space:nowrap}
+.au-was,.au-now{display:grid;grid-template-columns:78px 1fr;gap:8px;font-size:14.5px;line-height:1.42}
+.au-was{color:var(--st-ink3)}
+.au-now{color:var(--st-ink);margin-top:3px}
+.au-was em,.au-now em{font-style:normal;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding-top:2px}
+.au-now em{color:var(--st-link)}
+.au-kept{margin:22px 0 0;font-size:14px;color:var(--st-ink2);text-align:center}
+@media (max-width:900px){.au-cmp{grid-template-columns:1fr 1fr;gap:18px}.au-chg{grid-column:1 / -1;order:3}.au-was,.au-now{grid-template-columns:70px 1fr}}
+
+/* ?app — the prototype full screen on a real phone, with a bar that opens the idea panel */
+html.appmode,html.appmode body{height:100%;overflow:hidden;background:#000}
+html.appmode .au-nav,html.appmode .au-top-hero,html.appmode #why,html.appmode #ideas,html.appmode #compare,html.appmode .au-foot,
+html.appmode .au-proto-h,html.appmode #prototype .au-langrow,html.appmode #chips,html.appmode .au-hint,html.appmode .au-qr,html.appmode .au-mobw{display:none!important}
+html.appmode #prototype{padding:0;background:#000}
+html.appmode #prototype .au-wrap{padding:0;max-width:none}
+html.appmode .au-stage{display:block;margin:0}
+html.appmode .phone{position:fixed;top:0;left:0;right:0;margin:0 auto;width:min(100%,480px);height:calc(100% - 56px - env(safe-area-inset-bottom,0px));max-width:none;border-radius:0;padding:0;box-shadow:none;background:#000}
+html.appmode .phone-in{border-radius:0}
+html.appmode .island,html.appmode .sbar{display:none}
+html.appmode .scr .s-pad{padding-top:max(58px,calc(env(safe-area-inset-top,0px) + 16px))}
+html.appmode .scr .s-x,html.appmode .scr .s-lang{top:max(54px,calc(env(safe-area-inset-top,0px) + 10px))}
+.au-appbar,.au-scrim{display:none}
+html.appmode .au-appbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:70;height:calc(56px + env(safe-area-inset-bottom,0px));padding:0 12px env(safe-area-inset-bottom,0px) 16px;align-items:center;gap:12px;background:#0b0b0c;border-top:1px solid rgba(255,255,255,.1);color:#fff}
+.au-ab-why{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:none;border:0;color:#fff;font-size:14px;font-weight:500;text-align:left;cursor:pointer;padding:0}
+.au-ab-why i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);flex:none}
+.au-ab-why span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.au-ab-why em{font-style:normal;color:rgba(255,255,255,.6);margin-left:auto;flex:none;font-size:13px}
+.au-appbar .au-lsw{background:rgba(255,255,255,.12)}
+.au-appbar .au-lsw button{color:rgba(255,255,255,.75);padding:5px 11px}
+.au-appbar .au-lsw button.on{background:#fff;color:#000}
+html.appmode #panel{position:fixed;left:0;right:0;bottom:0;z-index:80;max-width:none;width:auto;margin:0 auto;border-radius:24px 24px 0 0;max-height:78%;overflow:auto;transform:translateY(105%);transition:transform .3s cubic-bezier(.3,.7,.2,1);padding-bottom:calc(26px + env(safe-area-inset-bottom,0px))}
+html.appmode.au-open #panel{transform:none}
+html.appmode.au-open .au-scrim{display:block;position:fixed;inset:0;z-index:75;background:rgba(0,0,0,.5)}
+
+/* ?tour — 1280×720 walkthrough frames (record-video.sh renders them into assets/walkthrough.mp4) */
+.au-tour{display:none}
+html.tourmode,html.tourmode body{overflow:hidden;background:var(--st-ground)}
+html.tourmode body *{visibility:hidden}
+html.tourmode .phone,html.tourmode .phone *,html.tourmode .au-tour,html.tourmode .au-tour *{visibility:visible}
+html.tourmode .phone{position:fixed;left:170px;top:44px;margin:0;transform:scale(.755);transform-origin:0 0;box-shadow:0 0 0 1.5px #3a3d42,0 34px 80px rgba(0,0,0,.22);z-index:5;max-width:none}
+html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-events:none;color:var(--st-ink)}
+.au-tb{position:absolute;left:590px;top:30px;display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600}
+.au-tb img{width:26px;height:26px;border-radius:7px}
+.au-tb small{font-size:16px;font-weight:400;color:var(--st-ink2)}
+.au-tby{position:absolute;right:48px;top:32px;font-size:14px;color:var(--st-ink3)}
+.au-tcap{position:absolute;left:590px;right:60px;top:50%;transform:translateY(-50%)}
+.au-tk{display:flex;align-items:center;gap:9px;font-size:17px;font-weight:600}
+.au-tk i{width:9px;height:9px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-tk.au-ctx{color:var(--st-ink2)}.au-tk.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-tt{font-size:46px;line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:14px 0 14px;text-wrap:balance}
+.au-tl{font-size:23px;line-height:1.36;color:var(--st-ink2);letter-spacing:-.01em;margin:0;max-width:28ch}
+.au-to{margin-top:28px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-to small{display:block;font-size:14px;font-weight:600;color:var(--st-ink3)}
+.au-to b{display:inline-block;font-size:62px;font-weight:700;letter-spacing:-.045em;line-height:1.08;color:var(--st-accent);margin-top:4px}
+.au-to span{display:block;font-size:16px;color:var(--st-ink2);margin-top:2px}
+.au-tprog{position:absolute;left:48px;right:48px;bottom:22px;height:4px;border-radius:3px;background:var(--st-hair);overflow:hidden}
+.au-tprog i{display:block;height:100%;background:var(--st-hi)}
+.au-ttap{position:absolute;left:0;top:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.5);box-shadow:0 0 0 2.5px rgba(255,255,255,.9),0 6px 16px rgba(0,0,0,.35);opacity:0}
+.au-tintro,.au-tend{position:absolute;inset:0;background:var(--st-ground);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0}
+.au-tintro .au-lede{margin-top:18px}
+.au-te-h{font-size:46px;line-height:1.08;font-weight:700;letter-spacing:-.035em;margin:0;max-width:18ch;text-wrap:balance}
+.au-te-n{display:flex;gap:64px;margin-top:30px}
+.au-te-n small{display:block;font-size:14px;color:var(--st-ink2)}
+.au-te-n b{display:block;font-size:76px;font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-accent);margin:4px 0 6px}
+.au-te-n span{font-size:15px;color:var(--st-ink2)}
+.au-te-q{display:flex;align-items:center;gap:18px;margin-top:34px;background:var(--st-card);border-radius:20px;padding:12px 24px 12px 12px;text-align:left}
+.au-te-q img{width:104px;height:104px;border-radius:10px;image-rendering:pixelated}
+.au-te-q b{display:block;font-size:18px;font-weight:600}
+.au-te-q span{display:block;font-size:15px;color:var(--st-link);margin-top:3px}
+.au-te-f{position:absolute;bottom:44px;left:0;right:0;font-size:13px;color:var(--st-ink3);margin:0}
+
+/* ---------- screen engine (layout only, no colours) ---------- */
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--b-bg);color:var(--b-ink);font-family:var(--b-font);
+     transform:translateX(100%);transition:transform .32s cubic-bezier(.3,.7,.2,1);overflow:hidden;text-align:left;line-height:normal;font-size:16px}
+.scr.is-active{transform:none;z-index:2}.scr.is-past{transform:translateX(-28%)}.scr.under{transform:none;z-index:1}
+.scr.sheet{transform:translateY(100%)}.scr.sheet.is-active{transform:none}
+.nofx,.nofx *{transition:none!important}
+.shot .scr{transition:none!important}
+/* ?phone — just the device at (10,10), for shoot.sh and hero-stills.sh (&clear = transparent ground) */
+.phoneonly body{background:#141615}
+.phoneonly.clear body{background:transparent}
+.phoneonly body *{visibility:hidden}
+.phoneonly .phone,.phoneonly .phone *{visibility:visible}
+.phoneonly .phone{position:fixed;top:10px;left:10px;z-index:99;box-shadow:none;max-width:none;margin:0}
+
+/* offer switch in the paywall panel (Build card: three offers) */
+.au-pn-a .au-var{font:600 13px var(--st-font);border:1px solid var(--st-hair);background:var(--st-card);color:var(--st-ink);border-radius:999px;padding:6px 12px;margin:6px 6px 4px 0;cursor:pointer}
+.au-pn-a .au-var.on{background:var(--st-accent);border-color:var(--st-accent);color:#fff}
+/* SCREENS:START — styles for the app's screens. RULE: colours only via var(--b-*), or white/black
+   with alpha (scrims, shadows). RULE: no class name that the audit page above already uses
+   (.hero .btn .chip .list .idea .note .stat .band .num .hint .display .split …) — brand-check refuses collisions. */
+/* BandLab screens: light onboarding (#fdfdfd, #23232d pills, #f1f2f7 chips) and the dark Membership surfaces (#020003) */
+.bl-body{flex:1;display:flex;flex-direction:column;padding:56px 20px 26px;position:relative;z-index:1;min-height:0}
+.bl-step{font:500 16px var(--b-font);text-align:center;color:var(--b-ink);margin:8px 0 0}
+.bl-h{font:600 25px/1.18 var(--b-font);text-align:center;color:var(--b-ink);margin:22px 0 0;letter-spacing:-.01em}
+.bl-s{font:400 15px/1.45 var(--b-font);text-align:center;color:var(--b-ink2);margin:10px 4px 0}
+.bl-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:9px 8px;margin-top:22px}
+.bl-chip{display:inline-flex;align-items:center;gap:6px;border:0;background:var(--b-surface);color:var(--b-ink);font:500 15px var(--b-font);padding:8px 13px;border-radius:var(--b-pill);cursor:pointer;white-space:nowrap}
+.bl-chip svg{width:16px;height:16px;flex:none}
+.bl-chip.on{background:var(--b-primary);color:var(--b-primary-ink)}
+.bl-chips.sm{gap:7px 6px;margin-top:18px}
+.bl-chips.sm .bl-chip{font-size:13.5px;padding:7px 11px}
+.bl-next{display:block;width:100%;border:0;background:var(--b-primary);color:var(--b-primary-ink);font:600 17px var(--b-font);padding:14px;border-radius:var(--b-pill);cursor:pointer;margin-top:22px}
+.bl-fn{font:400 13.5px var(--b-font);color:var(--b-ink2);text-align:center;margin:12px 0 0}
+.ico{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.icf{fill:currentColor;stroke:none}
+
+/* welcome */
+.bl-wel{padding:0}
+.bl-wphoto{display:block;width:100%;height:372px;object-fit:cover;object-position:center top}
+.bl-wbody{flex:1;display:flex;flex-direction:column;align-items:center;padding:14px 26px 0}
+.bl-logo{display:flex;align-items:center;gap:7px;margin-top:6px}
+.bl-logo .m{height:31px}.bl-logo .w{height:26px;filter:brightness(0);opacity:.88}
+.bl-tag{font:500 18px var(--b-font);color:var(--b-ink);margin:10px 0 0}
+.bl-email{width:100%;border:0;background:var(--b-primary);color:var(--b-primary-ink);font:600 16px var(--b-font);padding:13px;border-radius:var(--b-pill);margin-top:22px;cursor:pointer}
+.bl-or{display:flex;align-items:center;gap:12px;width:100%;color:var(--b-ink2);font:400 14px var(--b-font);margin:16px 0 10px}
+.bl-or::before,.bl-or::after{content:"";flex:1;height:1px;background:var(--b-line)}
+.bl-social{width:100%;display:block}
+.bl-legal{font:400 11.5px/1.5 var(--b-font);color:var(--b-ink2);text-align:center;margin:16px 0 0}
+.bl-legal b{color:var(--b-ink);font-weight:600}
+.bl-band{background:var(--b-surface);text-align:center;font:400 15px var(--b-font);color:var(--b-ink2);padding:16px 0 30px}
+.bl-band b{color:var(--b-ink);font-weight:600}
+
+/* studio ready (light) */
+.bl-beatrow{display:flex;align-items:center;gap:12px;background:var(--b-surface);border-radius:var(--b-radius);padding:10px 12px;margin-top:20px}
+.bl-beatrow img{width:46px;height:46px;border-radius:8px;object-fit:cover;flex:none}
+.bl-beatrow b{display:block;font:600 15px var(--b-font);color:var(--b-ink)}
+.bl-beatrow div>span{display:block;font:400 13px var(--b-font);color:var(--b-ink2);margin-top:2px}
+.bl-crown{margin-left:auto;display:inline-flex;align-items:center;gap:4px;background:var(--b-primary);color:var(--b-gold);font:600 12.5px var(--b-font);padding:5px 9px;border-radius:var(--b-pill);flex:none;white-space:nowrap}
+.bl-crown svg{width:13px;height:13px}
+.bl-crown s{color:rgba(255,255,255,.55);font-weight:500}
+.bl-kick{font:600 12px var(--b-font);letter-spacing:.06em;text-transform:uppercase;color:var(--b-ink2);margin:20px 0 4px}
+.bl-tools{display:flex;flex-direction:column;gap:14px;margin-top:8px}
+.bl-tool{display:flex;gap:13px;align-items:flex-start}
+.bl-tile{width:40px;height:40px;border-radius:10px;background:var(--b-red);color:white;display:flex;align-items:center;justify-content:center;flex:none}
+.bl-tile svg{width:22px;height:22px}
+.bl-tool b{display:block;font:600 15.5px var(--b-font);color:var(--b-ink)}
+.bl-tool span{display:block;font:400 13px/1.4 var(--b-font);color:var(--b-ink2);margin-top:2px}
+
+/* dark surfaces: Beats, paywall, offer, today */
+.dk{background:var(--b-dk);color:white}
+.bl-bhead{display:flex;align-items:baseline;gap:12px;margin-top:6px}
+.bl-bhead b{font:700 26px var(--b-font);color:white}.bl-bhead span{font:700 26px var(--b-font);color:var(--b-dkink2)}
+.bl-bhead svg{margin-left:auto;width:22px;height:22px;color:white;align-self:center}
+.bl-btabs{display:flex;gap:20px;font:500 15px var(--b-font);color:var(--b-dkink2);margin-top:14px;border-bottom:1px solid var(--b-dkline)}
+.bl-btabs span{padding-bottom:9px}.bl-btabs .cur{color:white;box-shadow:inset 0 -2px 0 white}
+.bl-bh{font:600 20px/1.2 var(--b-font);color:white;margin:16px 0 0}
+.bl-bs{font:400 13.5px/1.4 var(--b-font);color:var(--b-dkink2);margin:5px 0 0}
+.bl-feat{position:relative;margin-top:14px;border-radius:12px;overflow:hidden;height:246px;flex:none}
+.bl-feat img{width:100%;height:100%;object-fit:cover;display:block}
+.bl-feat.sel{box-shadow:0 0 0 2px var(--b-gold)}
+.bl-ppill{position:absolute;left:9px;right:9px;bottom:9px;display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:var(--b-pill);padding:7px 8px}
+.bl-play{width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.22);color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.bl-play svg{width:16px;height:16px}
+.bl-ppill b{display:block;font:600 14.5px var(--b-font);color:white}.bl-ppill i{display:block;font:400 12.5px var(--b-font);font-style:normal;color:rgba(255,255,255,.8);margin-top:1px}
+.bl-ppill .bl-crown{background:var(--b-goldfill)}
+.bl-eq{display:inline-flex;gap:2px;align-items:flex-end;height:11px;margin-left:5px}
+.bl-eq i{display:block;width:2.5px;background:var(--b-gold);border-radius:1px;margin:0}
+.bl-eq i:nth-child(1){height:6px}.bl-eq i:nth-child(2){height:11px}.bl-eq i:nth-child(3){height:8px}
+.bl-fy{font:600 15px var(--b-font);color:white;margin:16px 0 8px}
+.bl-covers{display:flex;gap:9px}
+.bl-covers img{width:50%;height:126px;object-fit:cover;border-radius:10px;display:block}
+.bl-gold{display:block;width:100%;border:0;background:var(--b-gold);color:var(--b-dk);font:600 17px var(--b-font);padding:15px;border-radius:12px;cursor:pointer;margin-top:auto}
+.bl-dfn{font:400 12px/1.4 var(--b-font);color:var(--b-dkink2);text-align:center;margin:9px 0 0}
+
+/* paywall */
+.bl-pw{padding:0}
+.bl-hero{position:relative;height:226px;padding-top:42px;flex:none;background:var(--b-dk);clip-path:polygon(0 0,100% 0,100% 84%,0 100%)}
+.bl-hero img{width:100%;height:100%;object-fit:cover;object-position:center 30%;display:block}
+.scr.sheet{background:transparent}
+.bl-x{position:absolute;top:52px;right:12px;width:40px;height:40px;border:0;background:none;color:white;cursor:pointer;z-index:4;display:flex;align-items:center;justify-content:center}
+.bl-x svg{width:22px;height:22px}
+.bl-pbody{flex:1;display:flex;flex-direction:column;padding:2px 18px 22px;min-height:0}
+.bl-ph{font:700 22px/1.2 var(--b-font);color:white;text-align:center;margin:0}
+.bl-proof{display:flex;justify-content:center;align-items:center;gap:6px;font:500 12.5px var(--b-font);color:var(--b-dkink2);margin-top:8px;white-space:nowrap}
+.bl-proof b{color:var(--b-gold);font-weight:600}
+.bl-tchips{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-top:10px}
+.bl-tchip{display:inline-flex;align-items:center;gap:5px;background:var(--b-dk2);color:white;font:500 12px var(--b-font);padding:5px 9px 5px 6px;border-radius:var(--b-pill)}
+.bl-tchip i{width:18px;height:18px;border-radius:5px;background:var(--b-red);display:flex;align-items:center;justify-content:center;font-style:normal}
+.bl-tchip svg{width:12px;height:12px}
+.bl-plans{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.bl-plan{position:relative;display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:transparent;border:1.5px solid var(--b-dkline);border-radius:var(--b-radius);padding:12px 14px;color:white;cursor:pointer;font-family:var(--b-font)}
+.bl-plan.on{border-color:var(--b-gold);background:var(--b-goldfill)}
+.bl-plan b{display:block;font:600 16.5px var(--b-font);color:white}
+.bl-plan>div>span,.bl-plan.solo>span:not(.bl-pill):not(.bl-rad):not(.bl-perk){display:block;font:400 13px var(--b-font);color:var(--b-dkink2);margin-top:3px}
+.bl-plan .g{color:var(--b-gold)}
+.bl-plan .bl-rad{margin-left:auto}
+.bl-rad{width:24px;height:24px;border-radius:50%;background:var(--b-dk2);flex:none;display:flex;align-items:center;justify-content:center;color:var(--b-dk)}
+.bl-rad svg{width:14px;height:14px;display:none}
+.on>.bl-rad{background:white}.on>.bl-rad svg{display:block}
+.bl-pill{position:absolute;top:-11px;right:12px;background:var(--b-red);color:white;font:600 11.5px var(--b-font);padding:4px 10px;border-radius:var(--b-pill);white-space:nowrap}
+.bl-big{font:700 26px var(--b-font);color:white;margin:2px 0 0;white-space:nowrap}
+.bl-big small{font:500 15px var(--b-font);color:var(--b-dkink2)}
+.bl-plan.solo{flex-direction:column;align-items:flex-start;padding:16px 16px 14px}
+.bl-plan.solo .bl-rad{position:absolute;top:18px;right:14px}
+.bl-plan.solo>.bl-pill{display:inline-block}
+.bl-plan.solo>.bl-perk{display:flex;color:var(--b-gold);align-items:center;gap:6px;font:500 13px var(--b-font);color:var(--b-gold);margin-top:9px}
+.bl-perk svg{width:14px;height:14px}
+.bl-alt{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:none;border:1.5px dashed var(--b-dkline);border-radius:var(--b-radius);color:var(--b-dkink2);font:500 14px var(--b-font);padding:11px;cursor:pointer}
+.bl-alt.on{border-style:solid;border-color:var(--b-gold);color:white;background:var(--b-goldfill)}
+.bl-alt b{color:white;font-weight:600}
+.bl-tl{position:relative;display:flex;flex-direction:column;gap:11px;margin-top:14px;padding-left:24px}
+.bl-tl::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--b-dkline)}
+.bl-tl div{position:relative}
+.bl-tl div::before{content:"";position:absolute;left:-22px;top:3px;width:12px;height:12px;border-radius:50%;background:var(--b-dk2);box-shadow:0 0 0 2px var(--b-dkline)}
+.bl-tl div:first-child::before{background:var(--b-gold);box-shadow:none}
+.bl-tl b{display:block;font:600 14px var(--b-font);color:white}
+.bl-tl span{display:block;font:400 12.5px var(--b-font);color:var(--b-dkink2);margin-top:1px}
+.bl-legal2{display:flex;justify-content:center;gap:14px;font:400 11.5px var(--b-font);color:var(--b-dkink2);margin-top:9px}
+.bl-push{margin-top:auto}
+
+/* offer sheet */
+.bl-sheet{background:transparent;justify-content:flex-end}
+.bl-scrim{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.bl-sbody{position:relative;background:var(--b-dk);border-radius:22px 22px 0 0;padding:12px 20px 26px;display:flex;flex-direction:column;box-shadow:0 -1px 0 var(--b-dkline)}
+.bl-grab{width:38px;height:5px;border-radius:3px;background:var(--b-dkline);margin:0 auto 14px}
+.bl-sbody .bl-x{position:absolute;top:8px;right:6px}
+.bl-oh{font:700 23px/1.2 var(--b-font);color:white;margin:6px 0 0;text-align:center}
+.bl-os{font:400 14px/1.45 var(--b-font);color:var(--b-dkink2);margin:8px 6px 0;text-align:center}
+.bl-no{background:none;border:0;color:var(--b-dkink2);font:500 14px var(--b-font);margin-top:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+/* notifications warm-up */
+.bl-later{position:absolute;top:58px;right:22px;font:400 16px var(--b-font);color:var(--b-ink2);background:none;border:0;cursor:pointer}
+.bl-nart{display:block;width:300px;margin:26px auto 0}
+.bl-bell{display:flex;align-items:center;justify-content:center;gap:8px;width:82%;margin:20px auto 0;border:0;background:var(--b-primary);color:var(--b-primary-ink);font:600 18px var(--b-font);padding:14px;border-radius:var(--b-pill);cursor:pointer}
+.bl-bell svg{width:20px;height:20px}
+
+/* today (rebuilt word for word) */
+.bl-thero{display:block;width:100%;height:139px;object-fit:cover;flex:none}
+.bl-tx{position:absolute;top:2px;right:2px;width:48px;height:48px;background:none;border:0;cursor:pointer}
+.bl-tbody{flex:1;display:flex;flex-direction:column;padding:28px 18px 20px;min-height:0}
+.bl-tbody .bl-ph{font-size:21px}
+.bl-ts{font:400 13.5px/1.45 var(--b-font);color:var(--b-dkink2);text-align:center;margin:8px 4px 0}
+.bl-feats{display:flex;flex-direction:column;gap:12px;margin-top:20px;overflow:hidden}
+.bl-pfeats{margin-top:16px;gap:11px}
+.bl-feats .bl-tile{width:34px;height:34px;border-radius:9px}.bl-feats .bl-tile svg{width:19px;height:19px}
+.bl-feats b{color:white;font-size:14.5px}.bl-feats span{color:var(--b-dkink2);font-size:12px}
+/* SCREENS:END */
+</style>
+</head>
+<body>
+
+<nav class="au-nav" aria-label="Sections">
+  <div class="au-nav-in">
+    <div class="au-brand">
+      <img src="assets/brand/appstore-icon.jpg" alt="">
+      <span>Growth Audit <small>· BandLab</small></span>
+    </div>
+    <a class="au-opt" href="#why">Why this</a>
+    <a href="#ideas">Five ideas</a>
+    <a href="#prototype">Prototype</a>
+    <a class="au-opt" href="#compare" id="navCompare" hidden>Paywall</a>
+  </div>
+</nav>
+
+<header class="au-top-hero" id="top">
+  <div class="au-wrap">
+    <p class="au-eyebrow"><i></i>Growth Audit · October 2026</p>
+    <h1 class="au-display">BandLab</h1>
+    <p class="au-lede">Five ideas to turn more BandLab creators into Members. <span>Each one built into your own onboarding, so you can tap through it.</span></p>
+    <p class="au-byline">Prepared by Adapty for the BandLab team</p>
+    <div class="au-ctas">
+      <a class="au-btn" href="#ideas">See the five ideas</a>
+      <a class="au-lnk" href="#prototype">Open the prototype</a>
+      <button type="button" class="au-lnk au-play" id="heroVideo" hidden>Watch the 30-second walkthrough</button>
+    </div>
+  </div>
+  <!-- filled from CONTENT.hero: three screen ids → assets/hero/<id>.png (make them with hero-stills.sh) -->
+  <div class="au-phones" id="heroPhones" aria-label="Three screens from the prototype"></div>
+</header>
+
+<section class="au-sec au-white" id="why">
+  <div class="au-wrap">
+    <div class="au-split">
+      <div>
+        <p class="au-kicker">Why you’re seeing this</p>
+        <h2 class="au-h2">30,000 subscription apps taught us what moves conversion. <span>Here’s what we’d test first at BandLab.</span></h2>
+      </div>
+      <div>
+        <p>Adapty runs subscriptions for <b>more than 30,000 apps</b>, so we see which onboarding and paywall changes lift revenue across the whole market, not just inside one app.</p>
+        <p>We pointed that at BandLab. We took <b>your own screens, copy and prices</b> from your recorded iOS flow and App Store listing, and rebuilt the path from install to paywall around the five ideas with the most potential.</p>
+      </div>
+    </div>
+    <div class="au-stats">
+      <div class="au-stat"><b>30,000+</b><span>apps run their subscriptions on Adapty</span></div>
+      <div class="au-stat"><b>5</b><span>ideas, each built as a working screen</span></div>
+      <div class="au-stat"><b>0</b><span>changes to your art direction</span></div>
+    </div>
+    <div class="au-notes">
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg></div>
+        <h3>Five ideas, not fifteen</h3>
+        <p>We’re not proposing to rebuild every screen. These are the changes with the highest potential, ranked by what we’d test first.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17"/></svg></div>
+        <h3>Your design, not ours</h3>
+        <p>Every colour, control and price in the prototype is BandLab’s. We changed the order and what gets shown.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13A1.5 1.5 0 0 1 5.5 4H15"/></svg></div>
+        <h3>We hope you haven’t tried these yet</h3>
+        <p>We work from the outside, so we can’t see your test history. If you’ve already run one of these, tell us and we’ll go deeper on the rest.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec" id="ideas">
+  <div class="au-wrap">
+    <div class="au-ideas-h">
+      <p class="au-kicker">The shortlist</p>
+      <h2 class="au-h2">Five ideas. <span>Ranked by what we’d test first.</span></h2>
+    </div>
+    <div class="au-list" id="ideaList"></div>
+    <div class="au-band">
+      <div>
+        <p class="au-k">Potential outcome, based on Adapty data</p>
+        <h3>Together they work on three moments: where Membership is first offered, which offer leads, and what happens when someone says no.</h3>
+        <p class="au-fn" id="bandFn"></p>
+        <a class="au-btn" href="#prototype">Tap through the prototype</a>
+      </div>
+      <div class="au-nums" id="bandNums"></div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec au-white" id="prototype">
+  <div class="au-wrap">
+    <div class="au-proto-h">
+      <p class="au-kicker">The prototype</p>
+      <h2 class="au-h2">Every idea, inside your own onboarding.</h2>
+      <p>Tap through it like a new user, or jump straight to an idea. Numbered chips mark the screens that carry one.</p>
+    </div>
+    <div class="au-langrow" id="langRow" hidden><span>Prototype language</span><div class="au-lsw" id="langSw" role="group" aria-label="Prototype language"></div></div>
+    <div class="au-seg" id="chips" role="tablist" aria-label="Screens"></div>
+    <div class="au-stage">
+      <div class="phone"><div class="phone-in">
+        <div class="island"></div>
+        <div class="sbar"><span>9:41</span><span>●●● ▮</span></div>
+
+<!-- SCREENS:START — one section.scr[data-id=ID] per screen, in flow order. Only the screens an idea lands on,
+     plus the context needed to read the flow (~8–10). Wiring: data-go="<id>" · data-back · data-pick="key:value"
+     (+ data-advance="<id>") · data-toggle="key:value" · data-bind="key" / "label:key" / "count:key" ·
+     data-requires="key" · data-show="key:value" · data-input="key" · class="scr sheet" slides up (offer paywall).
+     RULE: images only from assets/ (their app, their site, App Store) — never stock, never hotlinked.
+     Extras: data-t="key" = translatable (markup is CONTENT.langs[0]; other languages in CONTENT.i18n) — keep data-t on
+     leaf-ish elements, never on an element that also carries data-bind/data-pick/data-show;
+     data-langtoggle cycles the language (their own language pill); data-aside keeps a screen out of the flow
+     (the paywall TODAY, rendered only for the side-by-side still). -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3l2 2-3.2 3.2M17.8 8.2l-5.6 5.6"/><path d="M11.5 10.5c-1.8-1.6-4.6-1.3-6 .8-.8 1.1-.4 2-1.5 3-1.6 1.5-.9 4.2 1.6 5.1 2.2.8 4.3.3 5.5-1.4.8-1.1.9-2 2-2.8 2.1-1.4 2-4.1.4-4.7z"/><circle cx="9.2" cy="15" r="1.3"/></symbol>
+<symbol id="i-k" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 5v14M12 5v14M16 5v14"/><path d="M7 5h2v7H7zM15 5h2v7h-2z" fill="currentColor"/></symbol>
+<symbol id="i-d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="8" rx="8" ry="3"/><path d="M4 8v8c0 1.7 3.6 3 8 3s8-1.3 8-3V8M4 12.5c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+<symbol id="i-m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/></symbol>
+<symbol id="i-p" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4.5-1L19 8.5 15.5 5 5 15.5z"/><path d="M13.5 7l3.5 3.5M4 4h6M4 8h3"/></symbol>
+<symbol id="i-pad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 9h.01M12 9h.01M15.5 9h.01M8.5 12.5h.01M12 12.5h.01M15.5 12.5h.01M8 16h8" stroke-width="2.4"/></symbol>
+<symbol id="i-h" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol>
+<symbol id="i-s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM18 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></symbol>
+<symbol id="i-hp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></symbol>
+<symbol id="i-bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></symbol>
+<symbol id="i-n" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></symbol>
+<symbol id="i-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3L5 13h6l-1 8 8-10h-6z"/></symbol>
+<symbol id="i-disc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
+<symbol id="i-crown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16M5 15.5L4 6l5 4 3-6 3 6 5-4-1 9.5z"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z" fill="currentColor"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M12 2.5a6.2 6.2 0 0 0-6.2 6.2v4.1L3.6 16.4h16.8l-2.2-3.6V8.7A6.2 6.2 0 0 0 12 2.5zM9.6 18.4a2.4 2.4 0 0 0 4.8 0z" fill="currentColor"/></symbol>
+<symbol id="i-vc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="6" height="11" rx="3"/><path d="M4 11a6 6 0 0 0 12 0M10 17v4M19.5 3v5M17 5.5h5"/></symbol>
+<symbol id="i-midi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="3" width="6" height="11" rx="3"/><path d="M2 11a5.5 5.5 0 0 0 11 0M7.5 16.5V21M15.5 7h6M15.5 11h6M15.5 15h4"/></symbol>
+<symbol id="i-mst" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v16M12 4v16M18 4v16M3.5 14h5M9.5 8h5M15.5 16h5"/></symbol>
+<symbol id="i-ap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9c1.5-4 3-4 4.5 0s3 4 4.5 0 3-4 4.5 0 3 4 4.5 0M5 16h14M8 20h8"/></symbol>
+</defs></svg>
+
+<section class="scr" data-id="welcome">
+  <div class="bl-body bl-wel">
+    <img class="bl-wphoto" src="assets/crop/welcome-photo.png" alt="">
+    <div class="bl-wbody">
+      <div class="bl-logo"><img class="m" src="assets/crop/mark.png" alt=""><img class="w" src="assets/crop/word.png" alt="BandLab"></div>
+      <p class="bl-tag" data-t="w_tag">Make music wherever you are</p>
+      <button class="bl-email" data-go="role"><span data-t="w_cta">Sign up with Email</span></button>
+      <div class="bl-or"><span data-t="w_or">or continue with</span></div>
+      <img class="bl-social" src="assets/crop/social.png" alt="Apple, Google, Facebook" data-go="role">
+      <p class="bl-legal"><span data-t="w_legal">By continuing, you agree to BandLab’s <b>Terms of Use</b> and <b>Privacy Policy</b></span></p>
+    </div>
+    <div class="bl-band"><span data-t="w_login">Have an account? <b>Log in</b></span></div>
+  </div>
+</section>
+
+<section class="scr" data-id="role">
+  <div class="bl-body">
+    <p class="bl-step" data-t="r_step">2 of 5</p>
+    <h1 class="bl-h" data-t="r_h">Tell Us More About You</h1>
+    <p class="bl-s" data-t="r_s">Whether you’re a musician or a fan, we want to hear from you. Introduce yourself and help us improve your BandLab experience.</p>
+    <div class="bl-chips">
+      <button class="bl-chip" data-pick="role:guitarist"><svg><use href="#i-g"/></svg><span data-t="ro_g">Guitarist</span></button>
+      <button class="bl-chip" data-pick="role:keyboardist"><svg><use href="#i-k"/></svg><span data-t="ro_k">Keyboardist</span></button>
+      <button class="bl-chip" data-pick="role:drummer"><svg><use href="#i-d"/></svg><span data-t="ro_d">Drummer</span></button>
+      <button class="bl-chip" data-pick="role:vocalist"><svg><use href="#i-m"/></svg><span data-t="ro_v">Vocalist</span></button>
+      <button class="bl-chip" data-pick="role:songwriter"><svg><use href="#i-p"/></svg><span data-t="ro_s">Songwriter</span></button>
+      <button class="bl-chip" data-pick="role:bass"><svg><use href="#i-g"/></svg><span data-t="ro_b">Bass Player</span></button>
+      <button class="bl-chip" data-pick="role:dj"><svg><use href="#i-pad"/></svg><span data-t="ro_dj">DJ/Beatmaker</span></button>
+      <button class="bl-chip" data-pick="role:fan"><svg><use href="#i-h"/></svg><span data-t="ro_f">#1 Fan</span></button>
+      <button class="bl-chip" data-pick="role:other"><svg><use href="#i-s"/></svg><span data-t="ro_o">Other</span></button>
+    </div>
+    <button class="bl-next" data-go="genres"><span data-t="next">Next</span></button>
+    <p class="bl-fn" data-t="fn">You can change this setting anytime you want.</p>
+  </div>
+</section>
+
+<section class="scr" data-id="genres">
+  <div class="bl-body">
+    <p class="bl-step" data-t="g_step">3 of 5</p>
+    <h1 class="bl-h" data-t="g_h">Pick Your Favorite Genres</h1>
+    <p class="bl-s" data-t="g_s">Tell us what type of music you’re into, and we’ll make sure you see and hear the stuff you like</p>
+    <div class="bl-chips sm">
+      <button class="bl-chip" data-toggle="genres:rock"><svg><use href="#i-g"/></svg><span data-t="ge_rock">Rock</span></button>
+      <button class="bl-chip" data-toggle="genres:pop"><svg><use href="#i-m"/></svg><span data-t="ge_pop">Pop</span></button>
+      <button class="bl-chip" data-toggle="genres:hiphop"><svg><use href="#i-hp"/></svg><span data-t="ge_hiphop">Hip Hop</span></button>
+      <button class="bl-chip" data-toggle="genres:rnb"><svg><use href="#i-h"/></svg><span data-t="ge_rnb">R&amp;B &amp; Soul</span></button>
+      <button class="bl-chip" data-toggle="genres:electronic"><svg><use href="#i-bars"/></svg><span data-t="ge_electronic">Electronic</span></button>
+      <button class="bl-chip" data-toggle="genres:jazz"><svg><use href="#i-n"/></svg><span data-t="ge_jazz">Jazz</span></button>
+      <button class="bl-chip" data-toggle="genres:folk"><svg><use href="#i-g"/></svg><span data-t="ge_folk">Folk</span></button>
+      <button class="bl-chip" data-toggle="genres:latin"><svg><use href="#i-s"/></svg><span data-t="ge_latin">Latin</span></button>
+      <button class="bl-chip" data-toggle="genres:classical"><svg><use href="#i-n"/></svg><span data-t="ge_classical">Classical</span></button>
+      <button class="bl-chip" data-toggle="genres:funk"><svg><use href="#i-star"/></svg><span data-t="ge_funk">Funk</span></button>
+      <button class="bl-chip" data-toggle="genres:blues"><svg><use href="#i-g"/></svg><span data-t="ge_blues">Blues</span></button>
+      <button class="bl-chip" data-toggle="genres:metal"><svg><use href="#i-b"/></svg><span data-t="ge_metal">Metal</span></button>
+      <button class="bl-chip" data-toggle="genres:country"><svg><use href="#i-star"/></svg><span data-t="ge_country">Country</span></button>
+      <button class="bl-chip" data-toggle="genres:reggae"><svg><use href="#i-s"/></svg><span data-t="ge_reggae">Reggae</span></button>
+      <button class="bl-chip" data-toggle="genres:gospel"><svg><use href="#i-star"/></svg><span data-t="ge_gospel">Christian &amp; Gospel</span></button>
+      <button class="bl-chip" data-toggle="genres:kpop"><svg><use href="#i-h"/></svg><span data-t="ge_kpop">K-Pop</span></button>
+      <button class="bl-chip" data-toggle="genres:prog"><svg><use href="#i-g"/></svg><span data-t="ge_prog">Progressive Rock</span></button>
+      <button class="bl-chip" data-toggle="genres:afro"><svg><use href="#i-d"/></svg><span data-t="ge_afro">Afro</span></button>
+      <button class="bl-chip" data-toggle="genres:house"><svg><use href="#i-disc"/></svg><span data-t="ge_house">House</span></button>
+      <button class="bl-chip" data-toggle="genres:edm"><svg><use href="#i-disc"/></svg><span data-t="ge_edm">Dance &amp; EDM</span></button>
+      <button class="bl-chip" data-toggle="genres:trap"><svg><use href="#i-bars"/></svg><span data-t="ge_trap">Trap</span></button>
+      <button class="bl-chip" data-toggle="genres:punk"><svg><use href="#i-b"/></svg><span data-t="ge_punk">Punk</span></button>
+      <button class="bl-chip" data-toggle="genres:lofi"><svg><use href="#i-hp"/></svg><span data-t="ge_lofi">Lo-fi</span></button>
+      <button class="bl-chip" data-toggle="genres:dancehall"><svg><use href="#i-s"/></svg><span data-t="ge_dancehall">Dancehall</span></button>
+      <button class="bl-chip" data-toggle="genres:other"><svg><use href="#i-n"/></svg><span data-t="ge_other">Other</span></button>
+    </div>
+    <button class="bl-next" data-go="beat" data-requires="genres"><span data-t="next">Next</span></button>
+    <p class="bl-fn" data-t="fn">You can change this setting anytime you want.</p>
+  </div>
+</section>
+
+<section class="scr dk" data-id="beat">
+  <div class="bl-body">
+    <div class="bl-bhead"><b>Beats</b><span data-t="b_sounds">Sounds</span><svg><use href="#i-search"/></svg></div>
+    <div class="bl-btabs"><span class="cur" data-t="b_t1">Trending</span><span data-t="b_t2">All Beats</span><span data-t="b_t3">Purchased</span></div>
+    <h2 class="bl-bh" data-t="b_h">Pick a beat for your first track</h2>
+    <p class="bl-bs" data-t="b_s">Premium beats from the BandLab Beats store. Members claim them free.</p>
+    <div class="bl-feat">
+      <img src="assets/crop/beat-fahrenheit.png" alt="">
+      <div class="bl-ppill">
+        <button class="bl-play" data-pick="play:1" aria-label="Play"><svg data-show="play:0"><use href="#i-play"/></svg><svg data-show="play:1"><use href="#i-pause"/></svg></button>
+        <div><b>State Of Trance<span class="bl-eq" data-show="play:1"><i></i><i></i><i></i></span></b><i data-t="b_meta">Fahrenheit · Dance</i></div>
+        <span class="bl-crown"><svg><use href="#i-crown"/></svg><span data-t="b_free">Free <s>$20</s></span></span>
+      </div>
+    </div>
+    <p class="bl-fy" data-t="b_fy">For You</p>
+    <div class="bl-covers"><img src="assets/crop/beat-velvet.png" alt="Velvet"><img src="assets/crop/beat-offcenter.png" alt="Offcenter"></div>
+    <button class="bl-gold bl-use" style="margin-top:auto" data-go="studio"><span data-t="b_cta">Use this beat</span></button>
+    <p class="bl-dfn" data-t="b_fn">Start your first track over it in Studio.</p>
+  </div>
+</section>
+
+<section class="scr" data-id="studio">
+  <div class="bl-body">
+    <h1 class="bl-h" style="margin-top:14px" data-t="k_h">Your studio is ready</h1>
+    <p class="bl-s"><span data-t="k_s1">You picked</span> <b data-bind="label:role"></b> <span data-t="k_s2">and</span> <b data-bind="label:genres"></b>. <span data-t="k_s3">Here’s what BandLab Membership adds for you.</span></p>
+    <div class="bl-beatrow"><img src="assets/crop/beat-fahrenheit.png" alt=""><div><b>State Of Trance</b><span data-t="k_beat">Your first beat</span></div><span class="bl-crown"><svg><use href="#i-crown"/></svg><span data-t="b_free">Free <s>$20</s></span></span></div>
+    <p class="bl-kick"><span data-t="k_kick">Membership tools for</span> <span data-bind="label:rolepl"></span></p>
+    <div class="bl-tools">
+      <div class="bl-tool" data-tool="vc"><div class="bl-tile"><svg><use href="#i-vc"/></svg></div><div><b data-t="t_vc">Voice Cleaner</b><span data-t="t_vc_d">Remove background noise from your vocal recordings in a tap, for mix-ready vocals on the go.</span></div></div>
+      <div class="bl-tool" data-tool="ap"><div class="bl-tile"><svg><use href="#i-ap"/></svg></div><div><b data-t="t_ap">10 exclusive AutoPitch vocal effects</b><span data-t="t_ap_d">Members-only vocal effects spanning hip hop, hyperpop, and sci-fi.</span></div></div>
+      <div class="bl-tool" data-tool="midi"><div class="bl-tile"><svg><use href="#i-midi"/></svg></div><div><b data-t="t_midi">Audio-to-MIDI</b><span data-t="t_midi_d">Convert your vocal and instrumental (bass, piano, guitar, drums) recordings into MIDI notes in a tap.</span></div></div>
+      <div class="bl-tool" data-tool="mst"><div class="bl-tile"><svg><use href="#i-mst"/></svg></div><div><b data-t="t_mst">New Mastering presets and controls</b><span data-t="t_mst_d">Four new presets for more music styles, and intensity controls to master with precision.</span></div></div>
+      <div class="bl-tool" data-tool="beats"><div class="bl-tile"><svg><use href="#i-n"/></svg></div><div><b data-t="t_beats">Free BandLab Beats</b><span data-t="t_beats_d">Premium beats of your choice: 1 with a trial, 1 a month with a monthly plan, 2 a month with an annual plan.</span></div></div>
+    </div>
+    <button class="bl-next" style="margin-top:auto" data-go="paywall"><span data-t="k_cta">See Membership</span></button>
+    <p class="bl-fn" data-t="k_fn">Making music on BandLab stays free.</p>
+  </div>
+</section>
+
+<section class="scr dk" data-id="paywall">
+  <button class="bl-x" data-go="offer" aria-label="Close"><svg><use href="#i-x"/></svg></button>
+  <div class="bl-body bl-pw">
+    <div class="bl-hero"><img data-show="hero:v" src="assets/crop/hero-vocal.png" alt=""><img data-show="hero:t" src="assets/crop/hero-tracks.png" alt=""></div>
+    <div class="bl-pbody">
+      <h1 class="bl-ph"><span data-t="p_h1">Take your</span> <span data-bind="label:craft"></span> <span data-t="p_h2">further with BandLab Membership</span></h1>
+      <p class="bl-proof" data-t="p_proof"><b>★ 4.7</b> 511K ratings · App of the Year 2025 Finalist</p>
+
+
+      <div data-show="offer:a">
+        <div class="bl-plans">
+          <button class="bl-plan" data-pick="plan:year"><span class="bl-pill" data-t="pa_pill">Save 44% your first year</span><div><b data-t="pa_y">Annual, $8.33 / month</b><span data-t="pa_ys">$99.99 for your first year, then $149.99/year</span></div><span class="bl-rad"><svg><use href="#i-check"/></svg></span></button>
+          <button class="bl-plan" data-pick="plan:month"><div><b data-t="pa_m">Monthly, $14.99 / month</b><span class="g" data-t="pa_ms">3 days free trial</span></div><span class="bl-rad"><svg><use href="#i-check"/></svg></span></button>
+        </div>
+        <div class="bl-feats bl-pfeats">
+          <div class="bl-tool" data-tool="vc"><div class="bl-tile"><svg><use href="#i-vc"/></svg></div><div><b data-t="t_vc">Voice Cleaner</b><span data-t="tf_vc">Remove background noise from your vocal recordings in a tap.</span></div></div>
+          <div class="bl-tool" data-tool="ap"><div class="bl-tile"><svg><use href="#i-ap"/></svg></div><div><b data-t="t_ap">10 exclusive AutoPitch vocal effects</b><span data-t="tf_ap">Members-only vocal effects, from hip hop to hyperpop.</span></div></div>
+          <div class="bl-tool" data-tool="midi"><div class="bl-tile"><svg><use href="#i-midi"/></svg></div><div><b data-t="t_midi">Audio-to-MIDI</b><span data-t="tf_midi">Turn your recordings into MIDI notes in a tap.</span></div></div>
+          <div class="bl-tool" data-tool="mst"><div class="bl-tile"><svg><use href="#i-mst"/></svg></div><div><b data-t="t_mst">New Mastering presets and controls</b><span data-t="tf_mst">Four new presets and intensity controls.</span></div></div>
+          <div class="bl-tool" data-tool="beats"><div class="bl-tile"><svg><use href="#i-n"/></svg></div><div><b data-t="t_beats">Free BandLab Beats</b><span data-t="tf_beats">2 premium beats a month on the annual plan.</span></div></div>
+        </div>
+      </div>
+
+      <div data-show="offer:b">
+        <div class="bl-tchips">
+        <span class="bl-tchip" data-tool="vc"><i><svg><use href="#i-vc"/></svg></i><span data-t="tc_vc">Voice Cleaner</span></span>
+        <span class="bl-tchip" data-tool="ap"><i><svg><use href="#i-ap"/></svg></i><span data-t="tc_ap">AutoPitch effects</span></span>
+        <span class="bl-tchip" data-tool="midi"><i><svg><use href="#i-midi"/></svg></i><span data-t="tc_midi">Audio-to-MIDI</span></span>
+        <span class="bl-tchip" data-tool="mst"><i><svg><use href="#i-mst"/></svg></i><span data-t="tc_mst">Mastering</span></span>
+        <span class="bl-tchip" data-tool="beats"><i><svg><use href="#i-n"/></svg></i><span data-t="tc_beats">Free Beats</span></span>
+      </div>
+        <div class="bl-tl">
+          <div><b data-t="pb_t1">Today</b><span data-t="pb_t1s">Full Membership, and State Of Trance is yours</span></div>
+          <div><b data-t="pb_t2">Oct 26</b><span data-t="pb_t2s">We remind you that your trial ends in 2 days</span></div>
+          <div><b data-t="pb_t3">Oct 28</b><span data-t="pb_t3s">$14.99/month starts. Cancel before and pay nothing</span></div>
+        </div>
+        <div class="bl-plans">
+          <button class="bl-plan" data-pick="plan:month"><span class="bl-pill" data-t="pb_pill">7 days free</span><div><b data-t="pb_m">Monthly, $14.99 / month</b><span class="g" data-t="pb_ms">7 days free trial</span></div><span class="bl-rad"><svg><use href="#i-check"/></svg></span></button>
+          <button class="bl-plan" data-pick="plan:year"><div><b data-t="pb_y">Annual, $99.99 / year</b><span data-t="pb_ys">$149.99 after the first year</span></div><span class="bl-rad"><svg><use href="#i-check"/></svg></span></button>
+        </div>
+      </div>
+
+      <div data-show="offer:c">
+        <div class="bl-tchips">
+        <span class="bl-tchip" data-tool="vc"><i><svg><use href="#i-vc"/></svg></i><span data-t="tc_vc">Voice Cleaner</span></span>
+        <span class="bl-tchip" data-tool="ap"><i><svg><use href="#i-ap"/></svg></i><span data-t="tc_ap">AutoPitch effects</span></span>
+        <span class="bl-tchip" data-tool="midi"><i><svg><use href="#i-midi"/></svg></i><span data-t="tc_midi">Audio-to-MIDI</span></span>
+        <span class="bl-tchip" data-tool="mst"><i><svg><use href="#i-mst"/></svg></i><span data-t="tc_mst">Mastering</span></span>
+        <span class="bl-tchip" data-tool="beats"><i><svg><use href="#i-n"/></svg></i><span data-t="tc_beats">Free Beats</span></span>
+      </div>
+        <div class="bl-plans">
+          <button class="bl-plan solo" data-pick="plan:year"><span class="bl-pill" data-t="pc_pill">Save 44% your first year</span><span data-t="pc_k">BandLab Membership · Annual</span><p class="bl-big"><span data-t="pc_big">$8.33</span> <small data-t="pc_per">/ month</small></p><span data-t="pc_s">$99.99 for your first year, then $149.99/year</span><span class="bl-perk"><svg><use href="#i-crown"/></svg><span data-t="pc_perk">2 free premium beats every month</span></span><span class="bl-rad"><svg><use href="#i-check"/></svg></span></button>
+          <button class="bl-alt" data-pick="plan:month"><span data-t="pc_alt">Prefer monthly?</span> <b data-t="pc_alt2">$14.99/month, 3 days free</b></button>
+        </div>
+      </div>
+
+      <div class="bl-push"></div>
+      <button class="bl-gold" data-go="notif"><span data-show="cta:y"><span data-t="cta_y">Get Membership</span></span><span data-show="cta:m3"><span data-t="cta_m3">Try Free for 3 Days</span></span><span data-show="cta:m7"><span data-t="cta_m7">Try Free for 7 Days</span></span></button>
+      <p class="bl-dfn"><span data-show="cta:y"><span data-t="fine_y">$99.99 today. Renews at $149.99/year. Cancel anytime.</span></span><span data-show="cta:m3"><span data-t="fine_m3">Free for 3 days, then $14.99/month. Cancel anytime.</span></span><span data-show="cta:m7"><span data-t="fine_m7">Free for 7 days, then $14.99/month. Cancel anytime.</span></span></p>
+      <div class="bl-legal2"><span data-t="l1">Terms of Use</span><span data-t="l2">Privacy Policy</span><span data-t="l3">Restore</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="scr sheet" data-id="offer">
+  <div class="bl-body bl-sheet" style="padding:0">
+    <div class="bl-scrim"></div>
+    <div class="bl-sbody">
+      <div class="bl-grab"></div>
+      <button class="bl-x" data-go="paywall" aria-label="Close"><svg><use href="#i-x"/></svg></button>
+      <div data-show="oc:m">
+        <h2 class="bl-oh" data-t="om_h">Not ready for a whole year?</h2>
+        <p class="bl-os" data-t="om_s">Start with a month. Your free premium beat comes with the trial, and you can keep making music for free either way.</p>
+        <div class="bl-plans"><button class="bl-plan on" style="pointer-events:none"><div><b data-t="om_p">Monthly, $14.99 / month</b><span class="g" data-t="om_ps">3 days free trial</span></div><span class="bl-rad"><svg><use href="#i-check"/></svg></span></button></div>
+        <button class="bl-gold" style="margin-top:16px" data-go="notif"><span data-t="cta_m3">Try Free for 3 Days</span></button>
+        <p class="bl-dfn" data-t="fine_m3">Free for 3 days, then $14.99/month. Cancel anytime.</p>
+      </div>
+      <div data-show="oc:y">
+        <h2 class="bl-oh" data-t="oy_h">Rather pay once a year?</h2>
+        <p class="bl-os" data-t="oy_s">$99.99 for your first year is $8.33 a month, 44% less than paying monthly.</p>
+        <div class="bl-plans"><button class="bl-plan on" style="pointer-events:none"><span class="bl-pill" data-t="pa_pill">Save 44% your first year</span><div><b data-t="pa_y">Annual, $8.33 / month</b><span data-t="pa_ys">$99.99 for your first year, then $149.99/year</span></div><span class="bl-rad"><svg><use href="#i-check"/></svg></span></button></div>
+        <button class="bl-gold" style="margin-top:16px" data-go="notif"><span data-t="cta_y">Get Membership</span></button>
+        <p class="bl-dfn" data-t="fine_y">$99.99 today. Renews at $149.99/year. Cancel anytime.</p>
+      </div>
+      <button class="bl-no" data-go="notif"><span data-t="o_no">No thanks, keep making music for free</span></button>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="notif">
+  <button class="bl-later" data-go="welcome"><span data-t="n_later">Later</span></button>
+  <div class="bl-body" style="padding-top:96px">
+    <h1 class="bl-h" style="margin-top:12px" data-t="n_h">Turn on notifications</h1>
+    <p class="bl-s" data-t="n_s">Get updates when you have new followers, likes or comments you may have missed.</p>
+    <img class="bl-nart" src="assets/crop/notif-art.png" alt="">
+    <button class="bl-bell"><svg><use href="#i-bell"/></svg><span data-t="n_cta">Turn on</span></button>
+  </div>
+</section>
+
+<section class="scr dk" data-id="today" data-aside>
+  <div class="bl-body bl-pw">
+    <img class="bl-thero" src="assets/crop/today-hero.png" alt="">
+    <button class="bl-tx" aria-label="Close"></button>
+    <div class="bl-tbody">
+      <h1 class="bl-ph">Propel your creator journey with BandLab Membership</h1>
+      <p class="bl-ts">Unlock these exclusive features and accelerate your music goals with BandLab Membership.</p>
+      <div class="bl-plans" style="margin-top:22px">
+        <div class="bl-plan"><span class="bl-pill">Limited Time Offer · Save 44%</span><div><b>Annual, $99.99 / year</b><span>$149.99 after the first year</span></div><span class="bl-rad"><svg><use href="#i-check"/></svg></span></div>
+        <div class="bl-plan on"><div><b>Monthly, $14.99 / month</b><span class="g">3 days free trial</span></div><span class="bl-rad"><svg><use href="#i-check"/></svg></span></div>
+      </div>
+      <div class="bl-feats">
+        <div class="bl-tool"><div class="bl-tile"><svg><use href="#i-vc"/></svg></div><div><b>Voice Cleaner</b><span>Remove background noise from your vocal recordings in a tap, for mix-ready vocals on the go.</span></div></div>
+        <div class="bl-tool"><div class="bl-tile"><svg><use href="#i-midi"/></svg></div><div><b>Audio-to-MIDI</b><span>Convert your vocal and instrumental (bass, piano, guitar, drums) recordings into MIDI notes in a tap.</span></div></div>
+        <div class="bl-tool"><div class="bl-tile"><svg><use href="#i-mst"/></svg></div><div><b>New Mastering presets and controls</b><span>Unlock four new presets for more music styles, and preset intensity controls to master with precision.</span></div></div>
+        <div class="bl-tool"><div class="bl-tile"><svg><use href="#i-ap"/></svg></div><div><b>10 exclusive AutoPitch vocal effects</b></div></div>
+      </div>
+      <button class="bl-gold" style="margin-top:14px">Try Free for 3 Days</button>
+    </div>
+  </div>
+</section>
+<!-- SCREENS:END -->
+
+      </div></div>
+      <div class="au-pn" id="panel" aria-live="polite"></div>
+    </div>
+    <p class="au-hint">Switch the three offers in the paywall’s panel. Close the paywall with ✕ to see idea 4.</p>
+    <!-- shown when CONTENT.liveUrl is set: assets/qr-app.png = qr.swift "<liveUrl>?app" -->
+    <div class="au-qr" id="qrCard" hidden><img src="assets/qr-app.png" alt="QR code that opens the prototype full screen"><div><b>Try it on your phone</b><p>Scan to open the prototype full screen, the way a new user would see it.</p></div></div>
+    <div class="au-mobw" id="qrMob" hidden><a class="au-btn" href="?app">Open it full screen</a></div>
+  </div>
+</section>
+
+<!-- the paywall TODAY vs PROPOSED — built from CONTENT.compare (stills: assets/hero/<today>.png, <proposed>.png) -->
+<section class="au-sec" id="compare" hidden><div class="au-wrap" id="cmpBody"></div></section>
+
+<footer class="au-foot" id="sources">
+  <div class="au-wrap">
+    <details id="srcDetails">
+      <summary>Where the numbers come from</summary>
+      <div class="au-srcs" id="srcBody"></div>
+    </details>
+    <p class="au-fine" id="fine"></p>
+    <div class="au-cta-line">
+      <p>Every screen here can be built and A/B tested in Adapty’s Flow Builder, with no app release.</p>
+      <a class="au-btn" href="https://adapty.io/flow-paywall-builder/" target="_blank" rel="noopener">About Flow Builder</a>
+    </div>
+  </div>
+</footer>
+
+<!-- extras: video dialog (CONTENT.video), ?app bar, ?tour overlay (CONTENT.tour) -->
+<dialog class="au-vid" id="vid" aria-label="Walkthrough video">
+  <div class="au-vid-in"><video id="vidEl" controls muted playsinline preload="none"></video></div>
+  <div class="au-vid-bar"><a id="vidDl" download>Download the MP4</a><button type="button" class="au-vid-x" id="vidX">Close</button></div>
+</dialog>
+<div class="au-scrim" id="abScrim"></div>
+<div class="au-appbar" id="appbar">
+  <button type="button" class="au-ab-why" id="abWhy"><i></i><span id="abT"></span><em>Why ↑</em></button>
+  <div class="au-lsw" id="abLang" role="group" aria-label="Language"></div>
+</div>
+<div class="au-tour" aria-hidden="true">
+  <div class="au-tb"><img src="assets/brand/appstore-icon.jpg" alt="">Growth Audit <small>· BandLab</small></div>
+  <div class="au-tby">Prepared by Adapty</div>
+  <div class="au-tcap" id="tCap"></div>
+  <div class="au-ttap" id="tTap"></div>
+  <div class="au-tprog"><i id="tProg"></i></div>
+  <div class="au-tintro" id="tIntro"></div>
+  <div class="au-tend" id="tEnd"></div>
+</div>
+
+<!-- CONTENT — all the audit's words and numbers, as data. Schema (brand-check enforces it):
+     ideas  : 3–5 rows, ranked (the audit is five ideas, never fifteen). screen = the screen that shows it.
+     panel  : one entry per screen. idea = its number in ideas (1-based) or 0 for a context screen.
+              why on an idea screen reads "<b>Try</b> X, <b>because</b> Y." in ≤ 45 words; iv = its range.
+              why on a context screen is one line saying what it sets up.
+     hero   : three screen ids shown as stills in the hero — run hero-stills.sh after the screens are done.
+     outcome: combined "up to" numbers, PS-deck style, never above the ceiling of the per-idea ranges.
+     sources: public facts only — App Store, their site, their screens. No sales research on this page.
+     EXTRAS (each one hides itself when left empty):
+     langs  : [{"code":"en","name":"English"},{"code":"es","name":"Español · Spain prices"}] — first = the markup's language
+     i18n   : {"es": {"<data-t key>": "text with {tokens}"}} — every data-t key, for every language after the first
+     prices : {"es": {"yr": "39,99 €", …}} — {tokens} in i18n strings; that storefront's real IAP prices
+     labelsI18n: {"es": {"goal": {"a": "…"}}} — C.labels per language (data-bind="label:…")
+     liveUrl: final Pages URL (QR card + video end card); the QR file encodes liveUrl + "?app"
+     video / poster: "assets/walkthrough.mp4" / "assets/walkthrough-poster.jpg" (record-video.sh)
+     compare: {today, proposed, kicker, title, sub, todayCap, rows:[{h, idea, was, now}], kept} — today = a data-aside screen
+     tour   : {segments:[{id, d, st, tap:[selector-in-screen, ms], pop, reveal, end}], captions:{id:{n|k, t, l, o, ol}},
+              introLede, endTitle} — ~30 s total; the last segment has end:true (the end card) -->
+<script type="application/json" id="content">
+{
+ "app": "BandLab",
+ "state": {
+  "role": "vocalist",
+  "genres": [
+   "pop"
+  ],
+  "play": "0",
+  "offer": "a",
+  "plan": "year"
+ },
+ "labels": {
+  "role": {
+   "guitarist": "Guitarist",
+   "keyboardist": "Keyboardist",
+   "drummer": "Drummer",
+   "vocalist": "Vocalist",
+   "songwriter": "Songwriter",
+   "bass": "Bass Player",
+   "dj": "DJ/Beatmaker",
+   "fan": "#1 Fan",
+   "other": "Other"
+  },
+  "rolepl": {
+   "guitarist": "guitarists",
+   "keyboardist": "keyboardists",
+   "drummer": "drummers",
+   "vocalist": "vocalists",
+   "songwriter": "songwriters",
+   "bass": "bass players",
+   "dj": "DJs and beatmakers",
+   "fan": "fans",
+   "other": "creators"
+  },
+  "craft": {
+   "guitarist": "guitar tracks",
+   "keyboardist": "keys",
+   "drummer": "drum tracks",
+   "vocalist": "vocals",
+   "songwriter": "songs",
+   "bass": "bass lines",
+   "dj": "beats",
+   "fan": "music",
+   "other": "music"
+  },
+  "genres": {
+   "rock": "Rock",
+   "pop": "Pop",
+   "hiphop": "Hip Hop",
+   "rnb": "R&B & Soul",
+   "electronic": "Electronic",
+   "jazz": "Jazz",
+   "folk": "Folk",
+   "latin": "Latin",
+   "classical": "Classical",
+   "funk": "Funk",
+   "blues": "Blues",
+   "metal": "Metal",
+   "country": "Country",
+   "reggae": "Reggae",
+   "gospel": "Christian & Gospel",
+   "kpop": "K-Pop",
+   "prog": "Progressive Rock",
+   "afro": "Afro",
+   "house": "House",
+   "edm": "Dance & EDM",
+   "trap": "Trap",
+   "punk": "Punk",
+   "lofi": "Lo-fi",
+   "dancehall": "Dancehall",
+   "other": "Other"
+  }
+ },
+ "chips": {
+  "welcome": "Welcome",
+  "role": "Your role",
+  "genres": "Genres",
+  "beat": "First beat",
+  "studio": "Studio ready",
+  "paywall": "Paywall",
+  "offer": "Offer",
+  "notif": "Notifications"
+ },
+ "hero": [
+  "studio",
+  "paywall",
+  "beat"
+ ],
+ "outcome": {
+  "cr": "+20%",
+  "arpu": "+15%"
+ },
+ "ideas": [
+  {
+   "screen": "studio",
+   "title": "Offer Membership at the end of onboarding, in their role’s words",
+   "what": "Today a new creator answers four setup questions and lands in the feed; Membership only shows up later, behind Studio › Project Settings. End onboarding on the three Membership tools that fit the role they picked (Voice Cleaner and AutoPitch for a vocalist, Audio-to-MIDI for a guitarist), then the paywall.",
+   "impact": "+10–20%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "beat",
+   "title": "Let them pick a premium beat before the ask",
+   "what": "Add one step from your Beats store: they play State Of Trance and keep it for their first track. Membership already includes 1 free premium beat with a trial (a $20 beat in your store), so the paywall can say the beat they picked is theirs.",
+   "impact": "+5–15%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "paywall",
+   "title": "Test three offers on one paywall, without a release",
+   "what": "A: $99.99 for the first year shown as $8.33 a month, 44% less than $14.99 monthly, pre-selected. B: a 7-day trial on monthly instead of 3 days, with a timeline. C: one annual plan, with monthly one tap away. All three on your live SKUs.",
+   "impact": "+10–15%",
+   "il": "ARPU (annual mix)"
+  },
+  {
+   "screen": "offer",
+   "title": "Catch the people who close the paywall",
+   "what": "Answer ✕ with the plan the variant didn’t lead with: a month with 3 days free after the annual offers, or $99.99 for the first year after the trial offer. No timer, and a clear way to keep making music for free.",
+   "impact": "+10–15%",
+   "il": "ARPU"
+  },
+  {
+   "screen": "notif",
+   "title": "Ask for notifications after the paywall",
+   "what": "Your warm-up (“Get updates when you have new followers, likes or comments”) is good. Once Membership is the last step of onboarding, keep the warm-up and the system dialog after it, so nothing pulls attention at the decision.",
+   "impact": "+5–10%",
+   "il": "CR to purchase"
+  }
+ ],
+ "panel": {
+  "welcome": {
+   "idea": 0,
+   "t": "Your welcome, kept",
+   "why": "Your photo, logo, tagline and sign-up options, word for word. Account creation, profile photo and username stay as today; the prototype skips them."
+  },
+  "role": {
+   "idea": 0,
+   "t": "The question you already ask",
+   "why": "“Tell Us More About You”, as today. It sets up idea 1: the role picked here chooses the tools on the studio screen and the paywall headline."
+  },
+  "genres": {
+   "idea": 0,
+   "t": "Genres, as today",
+   "why": "Your 25 genres. The ones picked here come back two screens later. “Who inspires you?” stays as today and isn’t shown."
+  },
+  "beat": {
+   "idea": 2,
+   "t": "Let them pick a premium beat before the ask",
+   "why": "<b>Try</b> one step in your Beats store where they play a premium beat and keep it for their first track, <b>because</b> a product-native win right before the paywall makes Membership’s free beat with a trial feel already earned.",
+   "iv": "CR +5–15%",
+   "il": "to purchase"
+  },
+  "studio": {
+   "idea": 1,
+   "t": "Offer Membership at the end of onboarding, in their role’s words",
+   "why": "<b>Try</b> ending onboarding on the three Membership tools that fit the role they picked, then the paywall, <b>because</b> today Membership only appears deep in Studio settings, and a paywall that echoes the user’s own answer converts better.",
+   "iv": "CR +10–20%",
+   "il": "to purchase",
+   "also": "Go back to “Your role” and pick another: the tools, the paywall hero and its headline change with it."
+  },
+  "paywall": {
+   "idea": 3,
+   "t": "Test three offers on one paywall, without a release",
+   "why": "<b>Try</b> three offers side by side (the first-year saving as $8.33 a month, a 7-day trial, one annual plan), <b>because</b> today the 3-day monthly trial is pre-selected and the $99.99 first year sits underneath it, so the annual saving is easy to miss.",
+   "iv": "ARPU +10–15%",
+   "il": "annual mix",
+   "also": "Switch the offer: <button type=\"button\" class=\"au-var\" data-pick=\"offer:a\">A · Annual discount</button><button type=\"button\" class=\"au-var\" data-pick=\"offer:b\">B · Trial length</button><button type=\"button\" class=\"au-var\" data-pick=\"offer:c\">C · Plan mix</button><br>The 4.7★ and App of the Year line is new proof at the decision point. In a public Adapty case study, AI Studio doubled conversion to paid and grew revenue 70% in six months, with paywall tests live in under 30 minutes."
+  },
+  "offer": {
+   "idea": 4,
+   "t": "Catch the people who close the paywall",
+   "why": "<b>Try</b> answering ✕ with the plan the variant didn’t lead with (a month with 3 days free, or the $99.99 first year), with no timer, <b>because</b> a second offer right after the onboarding paywall converts people who just said no.",
+   "iv": "ARPU +10–15%",
+   "il": "from people who close it",
+   "also": "Under offer B the sheet offers the annual plan instead."
+  },
+  "notif": {
+   "idea": 5,
+   "t": "Ask for notifications after the paywall",
+   "why": "<b>Try</b> keeping your notification warm-up, but after Membership instead of before it, <b>because</b> a system dialog right before the paywall pulls attention away from the decision, and your warm-up already does the explaining.",
+   "iv": "CR +5–10%",
+   "il": "to purchase"
+  }
+ },
+ "langs": [
+  {
+   "code": "en",
+   "name": "English"
+  },
+  {
+   "code": "fr",
+   "name": "Français · prix France"
+  }
+ ],
+ "i18n": {
+  "fr": {
+   "w_tag": "Faites de la musique où que vous soyez",
+   "w_cta": "S’inscrire avec un e-mail",
+   "w_or": "ou continuer avec",
+   "w_legal": "En continuant, vous acceptez les <b>Conditions d’utilisation</b> et la <b>Politique de confidentialité</b> de BandLab",
+   "w_login": "Vous avez un compte ? <b>Se connecter</b>",
+   "r_step": "2 sur 5",
+   "r_h": "Parlez-nous de vous",
+   "r_s": "Musicien ou fan, on veut vous connaître. Présentez-vous et aidez-nous à améliorer votre expérience BandLab.",
+   "ro_g": "Guitariste",
+   "ro_k": "Claviériste",
+   "ro_d": "Batteur",
+   "ro_v": "Chanteur",
+   "ro_s": "Auteur-compositeur",
+   "ro_b": "Bassiste",
+   "ro_dj": "DJ/Beatmaker",
+   "ro_f": "Fan n°1",
+   "ro_o": "Autre",
+   "next": "Suivant",
+   "fn": "Vous pouvez modifier ce réglage à tout moment.",
+   "g_step": "3 sur 5",
+   "g_h": "Choisissez vos genres préférés",
+   "g_s": "Dites-nous ce que vous écoutez, et on vous montrera ce que vous aimez",
+   "ge_rock": "Rock",
+   "ge_pop": "Pop",
+   "ge_hiphop": "Hip-hop",
+   "ge_rnb": "R&amp;B et soul",
+   "ge_electronic": "Électro",
+   "ge_jazz": "Jazz",
+   "ge_folk": "Folk",
+   "ge_latin": "Latino",
+   "ge_classical": "Classique",
+   "ge_funk": "Funk",
+   "ge_blues": "Blues",
+   "ge_metal": "Metal",
+   "ge_country": "Country",
+   "ge_reggae": "Reggae",
+   "ge_gospel": "Chrétien et gospel",
+   "ge_kpop": "K-pop",
+   "ge_prog": "Rock progressif",
+   "ge_afro": "Afro",
+   "ge_house": "House",
+   "ge_edm": "Dance et EDM",
+   "ge_trap": "Trap",
+   "ge_punk": "Punk",
+   "ge_lofi": "Lo-fi",
+   "ge_dancehall": "Dancehall",
+   "ge_other": "Autre",
+   "b_sounds": "Sons",
+   "b_t1": "Tendances",
+   "b_t2": "Tous les beats",
+   "b_t3": "Achetés",
+   "b_h": "Choisissez un beat pour votre premier morceau",
+   "b_s": "Des beats premium du store BandLab Beats, offerts aux membres.",
+   "b_meta": "Fahrenheit · Dance",
+   "b_free": "Offert",
+   "b_fy": "Pour vous",
+   "b_cta": "Utiliser ce beat",
+   "b_fn": "Commencez votre premier morceau dessus dans Studio.",
+   "k_h": "Votre studio est prêt",
+   "k_s1": "Vous avez choisi",
+   "k_s2": "et",
+   "k_s3": "Voici ce que BandLab Membership vous apporte.",
+   "k_beat": "Votre premier beat",
+   "k_kick": "Les outils Membership pour les",
+   "t_vc": "Voice Cleaner",
+   "t_vc_d": "Supprimez le bruit de fond de vos voix en un geste, pour des voix prêtes à mixer partout.",
+   "t_ap": "10 effets vocaux AutoPitch exclusifs",
+   "t_ap_d": "Des effets vocaux réservés aux membres, du hip-hop à l’hyperpop et à la sci-fi.",
+   "t_midi": "Audio-to-MIDI",
+   "t_midi_d": "Convertissez vos voix et instruments (basse, piano, guitare, batterie) en notes MIDI en un geste.",
+   "t_mst": "Nouveaux presets de mastering",
+   "t_mst_d": "Quatre nouveaux presets pour plus de styles, et un réglage d’intensité pour masteriser avec précision.",
+   "t_beats": "BandLab Beats offerts",
+   "t_beats_d": "Des beats premium au choix : 1 avec l’essai, 1 par mois avec l’offre mensuelle, 2 par mois avec l’offre annuelle.",
+   "tf_vc": "Supprimez le bruit de fond de vos voix en un geste.",
+   "tf_ap": "Des effets vocaux réservés aux membres, du hip-hop à l’hyperpop.",
+   "tf_midi": "Transformez vos enregistrements en notes MIDI en un geste.",
+   "tf_mst": "Quatre nouveaux presets et un réglage d’intensité.",
+   "tf_beats": "2 beats premium par mois avec l’offre annuelle.",
+   "k_cta": "Voir Membership",
+   "k_fn": "Faire de la musique sur BandLab reste gratuit.",
+   "p_h1": "Emmenez vos",
+   "p_h2": "plus loin avec BandLab Membership",
+   "p_proof": "<b>★ 4,7</b> 31 678 notes · Finaliste App de l’année 2025",
+   "tc_vc": "Voice Cleaner",
+   "tc_ap": "Effets AutoPitch",
+   "tc_midi": "Audio-to-MIDI",
+   "tc_mst": "Mastering",
+   "tc_beats": "Beats offerts",
+   "pa_pill": "−{save} vs mensuel",
+   "pa_y": "Annuel, {yrpm} / mois",
+   "pa_ys": "{yr} par an, facturé chaque année",
+   "pa_m": "Mensuel, {mo} / mois",
+   "pa_ms": "Essai gratuit de 3 jours",
+   "pb_t1": "Aujourd’hui",
+   "pb_t1s": "Membership complet, et State Of Trance est à vous",
+   "pb_t2": "26 oct.",
+   "pb_t2s": "On vous prévient : l’essai se termine dans 2 jours",
+   "pb_t3": "28 oct.",
+   "pb_t3s": "L’abonnement à {mo}/mois démarre. Annulez avant, vous ne payez rien",
+   "pb_pill": "7 jours offerts",
+   "pb_m": "Mensuel, {mo} / mois",
+   "pb_ms": "Essai gratuit de 7 jours",
+   "pb_y": "Annuel, {yr} / an",
+   "pb_ys": "soit {yrpm} / mois",
+   "pc_pill": "−{save} vs mensuel",
+   "pc_k": "BandLab Membership · Annuel",
+   "pc_big": "{yrpm}",
+   "pc_per": "/ mois",
+   "pc_s": "{yr} facturés une fois par an",
+   "pc_perk": "2 beats premium offerts chaque mois",
+   "pc_alt": "Plutôt au mois ?",
+   "pc_alt2": "{mo}/mois, 3 jours offerts",
+   "cta_y": "Devenir membre",
+   "cta_m3": "Essai gratuit de 3 jours",
+   "cta_m7": "Essai gratuit de 7 jours",
+   "fine_y": "{yr} aujourd’hui. Renouvelé chaque année. Annulable à tout moment.",
+   "fine_m3": "Gratuit pendant 3 jours, puis {mo}/mois. Annulable à tout moment.",
+   "fine_m7": "Gratuit pendant 7 jours, puis {mo}/mois. Annulable à tout moment.",
+   "l1": "Conditions",
+   "l2": "Confidentialité",
+   "l3": "Restaurer",
+   "om_h": "Pas prêt pour une année entière ?",
+   "om_s": "Commencez par un mois. Votre beat premium est offert avec l’essai, et BandLab reste gratuit dans tous les cas.",
+   "om_p": "Mensuel, {mo} / mois",
+   "om_ps": "Essai gratuit de 3 jours",
+   "oy_h": "Plutôt payer une fois par an ?",
+   "oy_s": "{yr} par an, c’est {yrpm} par mois, {save} de moins qu’au mois.",
+   "o_no": "Non merci, je continue gratuitement",
+   "n_later": "Plus tard",
+   "n_h": "Activez les notifications",
+   "n_s": "Soyez averti de vos nouveaux abonnés, j’aime et commentaires que vous auriez pu manquer.",
+   "n_cta": "Activer"
+  }
+ },
+ "prices": {
+  "fr": {
+   "yr": "179,99 €",
+   "yrpm": "15,00 €",
+   "mo": "17,99 €",
+   "save": "17 %"
+  }
+ },
+ "labelsI18n": {
+  "fr": {
+   "role": {
+    "guitarist": "Guitariste",
+    "keyboardist": "Claviériste",
+    "drummer": "Batteur",
+    "vocalist": "Chanteur",
+    "songwriter": "Auteur-compositeur",
+    "bass": "Bassiste",
+    "dj": "DJ/Beatmaker",
+    "fan": "Fan n°1",
+    "other": "Autre"
+   },
+   "rolepl": {
+    "guitarist": "guitaristes",
+    "keyboardist": "claviéristes",
+    "drummer": "batteurs",
+    "vocalist": "chanteurs",
+    "songwriter": "auteurs-compositeurs",
+    "bass": "bassistes",
+    "dj": "DJ et beatmakers",
+    "fan": "fans",
+    "other": "créateurs"
+   },
+   "craft": {
+    "guitarist": "pistes de guitare",
+    "keyboardist": "claviers",
+    "drummer": "pistes de batterie",
+    "vocalist": "voix",
+    "songwriter": "chansons",
+    "bass": "lignes de basse",
+    "dj": "beats",
+    "fan": "morceaux",
+    "other": "morceaux"
+   },
+   "genres": {
+    "rock": "Rock",
+    "pop": "Pop",
+    "hiphop": "Hip-hop",
+    "rnb": "R&B et soul",
+    "electronic": "Électro",
+    "jazz": "Jazz",
+    "folk": "Folk",
+    "latin": "Latino",
+    "classical": "Classique",
+    "funk": "Funk",
+    "blues": "Blues",
+    "metal": "Metal",
+    "country": "Country",
+    "reggae": "Reggae",
+    "gospel": "Chrétien et gospel",
+    "kpop": "K-pop",
+    "prog": "Rock progressif",
+    "afro": "Afro",
+    "house": "House",
+    "edm": "Dance et EDM",
+    "trap": "Trap",
+    "punk": "Punk",
+    "lofi": "Lo-fi",
+    "dancehall": "Dancehall",
+    "other": "Autre"
+   }
+  }
+ },
+ "liveUrl": "https://eddieatadapty.github.io/bandlab-flow-rebuild/",
+ "video": "assets/walkthrough.mp4",
+ "poster": "assets/walkthrough-poster.jpg",
+ "compare": {
+  "today": "today",
+  "proposed": "paywall",
+  "kicker": "The paywall, side by side",
+  "title": "Your Membership paywall, today and proposed.",
+  "sub": "Same layout, cards and button.",
+  "todayCap": "rebuilt from your recording, opened from Studio › Project Settings",
+  "rows": [
+   {
+    "h": "Where it appears",
+    "idea": 1,
+    "was": "Only from Studio › Project Settings and the crown in the feed, after onboarding",
+    "now": "The last step of onboarding, right after the tools for their role"
+   },
+   {
+    "h": "Headline",
+    "idea": 1,
+    "was": "“Propel your creator journey with BandLab Membership”",
+    "now": "“Take your vocals further with BandLab Membership”, from the role they picked"
+   },
+   {
+    "h": "The free beat",
+    "idea": 2,
+    "was": "Free beats only explained in the Membership perks tab",
+    "now": "The beat they just played, free with Membership"
+   },
+   {
+    "h": "Which offer leads",
+    "idea": 3,
+    "was": "Monthly with a 3-day trial pre-selected; $99.99 first year under a “Limited Time Offer” pill. No rating",
+    "now": "Three offers to test: $8.33 a month for the first year, a 7-day trial, or one annual plan. 4.7★ from 511K ratings by the plans"
+   },
+   {
+    "h": "On ✕",
+    "idea": 4,
+    "was": "The paywall closes",
+    "now": "One second offer on the plan the variant didn’t lead with"
+   }
+  ],
+  "kept": "Kept: your dark layout, the gold selected card, red icon tiles, the yellow full-width button, the “Save 44%” figure and every price."
+ },
+ "tour": {
+  "introLede": "Five ideas to turn more BandLab creators into Members.",
+  "endTitle": "Five ideas, built into your own onboarding.",
+  "segments": [
+   {
+    "id": "welcome",
+    "d": 3200,
+    "tap": [
+     ".bl-email",
+     2800
+    ]
+   },
+   {
+    "id": "role",
+    "d": 1500,
+    "st": {
+     "role": ""
+    },
+    "tap": [
+     "[data-pick=\"role:vocalist\"]",
+     1150
+    ]
+   },
+   {
+    "id": "role",
+    "d": 900,
+    "st": {
+     "role": "vocalist"
+    },
+    "tap": [
+     ".bl-next",
+     600
+    ]
+   },
+   {
+    "id": "genres",
+    "d": 1400,
+    "st": {
+     "genres": []
+    },
+    "tap": [
+     "[data-toggle=\"genres:pop\"]",
+     1000
+    ]
+   },
+   {
+    "id": "genres",
+    "d": 900,
+    "st": {
+     "genres": [
+      "pop"
+     ]
+    },
+    "tap": [
+     ".bl-next",
+     600
+    ]
+   },
+   {
+    "id": "beat",
+    "d": 2600,
+    "st": {
+     "play": "0"
+    },
+    "tap": [
+     ".bl-play",
+     2200
+    ]
+   },
+   {
+    "id": "beat",
+    "d": 1600,
+    "st": {
+     "play": "1"
+    },
+    "tap": [
+     ".bl-use",
+     1250
+    ]
+   },
+   {
+    "id": "studio",
+    "d": 3000,
+    "reveal": ".bl-tools",
+    "tap": [
+     ".bl-next",
+     2600
+    ]
+   },
+   {
+    "id": "paywall",
+    "d": 3000,
+    "st": {
+     "offer": "a",
+     "plan": "year"
+    }
+   },
+   {
+    "id": "paywall",
+    "d": 2200,
+    "st": {
+     "offer": "b",
+     "plan": "month"
+    }
+   },
+   {
+    "id": "paywall",
+    "d": 2200,
+    "st": {
+     "offer": "c",
+     "plan": "year"
+    },
+    "tap": [
+     ".bl-x",
+     1800
+    ]
+   },
+   {
+    "id": "offer",
+    "d": 2800,
+    "tap": [
+     ".bl-no",
+     2400
+    ]
+   },
+   {
+    "id": "notif",
+    "d": 2400
+   },
+   {
+    "id": "notif",
+    "d": 3000,
+    "end": true
+   }
+  ],
+  "captions": {
+   "welcome": {
+    "k": "Context",
+    "t": "Your welcome, kept",
+    "l": "Photo, logo, tagline and sign-up, as today."
+   },
+   "role": {
+    "k": "Context",
+    "t": "The question you already ask",
+    "l": "What do you make? One tap."
+   },
+   "genres": {
+    "k": "Context",
+    "t": "Genres, as today",
+    "l": "The genres they pick come back two screens later."
+   },
+   "beat": {
+    "n": 2,
+    "t": "A premium beat before the ask",
+    "l": "They play it and keep it for their first track.",
+    "o": "CR +5–15%",
+    "ol": "to purchase"
+   },
+   "studio": {
+    "n": 1,
+    "t": "Membership, in their role’s words",
+    "l": "The three tools a vocalist needs, then the paywall.",
+    "o": "CR +10–20%",
+    "ol": "to purchase"
+   },
+   "paywall": {
+    "n": 3,
+    "t": "Three offers, one paywall",
+    "l": "A: $8.33 a month. B: 7 days free. C: one plan.",
+    "o": "ARPU +10–15%",
+    "ol": "annual mix"
+   },
+   "offer": {
+    "n": 4,
+    "t": "Catch the ✕",
+    "l": "A month, 3 days free. No timer.",
+    "o": "ARPU +10–15%",
+    "ol": "from people who close it"
+   },
+   "notif": {
+    "n": 5,
+    "t": "Notifications after the paywall",
+    "l": "Your warm-up, moved past the decision.",
+    "o": "CR +5–10%",
+    "ol": "to purchase"
+   }
+  }
+ },
+ "grounding": "Impact ranges are Adapty’s expected effect from teardowns and A/B tests across 30,000+ subscription apps, not measured lift for BandLab. They overlap, so they don’t add up.",
+ "sources": [
+  {
+   "group": "Prices",
+   "items": [
+    {
+     "dt": "$99.99 first year, then $149.99",
+     "dd": "Your Membership paywall in the <a href=\"https://screensdesign.com/apps/bandlab-music-making-studio/?vs=119330&utm_source=screensdesign&utm_medium=mcp&utm_content=app_screens\" target=\"_blank\" rel=\"noopener\">ScreensDesign recording</a> (“Annual, $99.99 / year · $149.99 after the first year”). $149.99 is “BandLab Membership Pro - 12 Months” on the <a href=\"https://apps.apple.com/us/app/bandlab-music-maker-beats/id968585775\" target=\"_blank\" rel=\"noopener\">US App Store listing</a>. $99.99 ÷ 12 = $8.33 a month; $14.99 × 12 = $179.88, so the first year is 44% less, the same 44% your paywall shows."
+    },
+    {
+     "dt": "$14.99 a month, 3-day trial",
+     "dd": "“BandLab Membership Pro - 1 Month” and “BandLab Membership - 1 Month”, both $14.99 on the US listing. The 3-day trial is the one on your recorded paywall."
+    },
+    {
+     "dt": "7-day trial (offer B)",
+     "dd": "Not on sale today. It needs a 7-day introductory offer in App Store Connect on one of the two $14.99 monthly products (for example “BandLab Membership - 1 Month”), and no app release."
+    },
+    {
+     "dt": "$20 beat",
+     "dd": "Your App Store screenshot 5 (“State Of Trance · Fahrenheit · Dance… Free $20”)."
+    },
+    {
+     "dt": "France: 17,99 € · 179,99 €",
+     "dd": "“BandLab Membership Pro - 1 Month” and “- 12 Months” on the <a href=\"https://apps.apple.com/fr/app/bandlab-music-maker-beats/id968585775\" target=\"_blank\" rel=\"noopener\">France listing</a>. 179,99 € ÷ 12 = 15,00 € a month; 17,99 € × 12 = 215,88 €, so 17% less. We couldn’t see a French first-year price, so the French version shows 179,99 € and no first-year offer."
+    },
+    {
+     "dt": "Not used",
+     "dd": "“BandLab Membership Max” (1 Month and 12 Months) is listed on other storefronts (34,99 € a month in Germany and Italy, for example) but no US or French price is visible, so plan mix C uses annual and monthly only. Boost purchases ($3–$20) aren’t subscriptions."
+    }
+   ]
+  },
+  {
+   "group": "Proof",
+   "items": [
+    {
+     "dt": "4.7 from 511K ratings",
+     "dd": "US App Store listing: 4.74 from 510,527 ratings. France: 4.67 from 31,678 ratings, shown on the French paywall."
+    },
+    {
+     "dt": "App of the Year 2025 Finalist",
+     "dd": "Your App Store screenshot 1."
+    },
+    {
+     "dt": "AI Studio: revenue +70% in 6 months",
+     "dd": "Public Adapty case study: conversion to paid doubled by matching onboarding to each ad, paywall tests live in under 30 minutes, a team of four. <a href=\"https://adapty.io/case-studies/ai-studio/\" target=\"_blank\" rel=\"noopener\">adapty.io/case-studies/ai-studio</a>"
+    }
+   ]
+  },
+  {
+   "group": "Features and copy",
+   "items": [
+    {
+     "dt": "Onboarding",
+     "dd": "Word for word from your <a href=\"https://screensdesign.com/apps/bandlab-music-making-studio/?av=1770&flow=55377&ts=0.000&utm_source=screensdesign&utm_medium=mcp&utm_content=app_screens\" target=\"_blank\" rel=\"noopener\">recorded onboarding</a>: the welcome, “Tell Us More About You”, “Pick Your Favorite Genres” and “Turn on notifications”. The step counter reads “of 5” because the beat step is added."
+    },
+    {
+     "dt": "Membership tools",
+     "dd": "Voice Cleaner, Audio-to-MIDI, Mastering and AutoPitch from your paywall and Membership perks screens. The free-beat rule (“1 with a trial, 1/month with a monthly plan, and 2/month with an annual plan”) is from the perks screen."
+    },
+    {
+     "dt": "Beats",
+     "dd": "The Beats screen, State Of Trance, Velvet and Offcenter, from your App Store screenshot 5."
+    },
+    {
+     "dt": "Our words",
+     "dd": "The beat prompt, the studio-ready screen, the paywall headline, the three offers, the timeline, the offer on close and the French translation are ours, not yours."
+    }
+   ]
+  },
+  {
+   "group": "Design",
+   "items": [
+    {
+     "dt": "Colours",
+     "dd": "Red #f12c18 and gold #ffaf13 from bandlab.com. Ink #23232d, chips #f1f2f7, grey #64646a and the paywall’s #020003, #373538 and #342304 sampled from your recorded screens."
+    },
+    {
+     "dt": "Type",
+     "dd": "BandLab Sans is your own family; we used Figtree, the closest Google family."
+    },
+    {
+     "dt": "Art",
+     "dd": "Logo from bandlab.com’s share image (background removed). Welcome photo, sign-in buttons, notification illustration and today’s paywall photo cut from your recorded screens, so they’re lower resolution. Studio heroes and beat covers cut from App Store screenshots 2, 3 and 5 (a touch indicator painted out of screenshot 3). The role and genre chip icons are our approximations of yours."
+    }
+   ]
+  },
+  {
+   "group": "What we couldn’t see",
+   "items": [
+    {
+     "dt": "Your live flow today",
+     "dd": "The recording is from March 2025 and we haven’t walked the current app. In it, Membership only appears after onboarding (Studio settings, the crown in the feed, the perks tab)."
+    },
+    {
+     "dt": "Trial lengths",
+     "dd": "We saw a 3-day trial on monthly and none on annual. Offer B’s 7 days is a test, not something you sell today."
+    },
+    {
+     "dt": "The reminder",
+     "dd": "Offer B’s reminder before the trial ends needs a notification from your app. The paywall can promise it only if the app sends it."
+    },
+    {
+     "dt": "Your French app",
+     "dd": "We haven’t seen your French screens, so the translation is ours and today’s paywall is shown in English."
+    }
+   ]
+  }
+ ]
+}
+</script>
+
+<script>
+/* BandLab hooks: the role picks the Membership tools, hero and headline; the offer switch (A/B/C) sets the default plan,
+   the CTA wording and what the ✕ sheet offers; dark screens get a light status bar. */
+var KIT = {vocalist:['vc','ap','mst'], songwriter:['ap','midi','mst'], guitarist:['midi','mst','vc'], keyboardist:['midi','mst','vc'],
+           drummer:['midi','mst','vc'], bass:['midi','mst','vc'], dj:['beats','mst','midi'], fan:['beats','ap','mst'], other:['beats','ap','mst']};
+var VOC = {vocalist:1, songwriter:1, fan:1, other:1}, DEF = {a:'year', b:'month', c:'year'}, DARK = {beat:1, paywall:1, offer:1, today:1}, lastOffer = null;
+window.onSync = function(S){
+  var was = [S.craft, S.rolepl, S.hero, S.cta, S.oc, S.plan].join('|');
+  S.craft = S.rolepl = S.role || 'other';
+  S.hero = VOC[S.role] || !S.role ? 'v' : 't';
+  if (S.offer !== lastOffer) { if (lastOffer !== null) S.plan = DEF[S.offer]; lastOffer = S.offer; }
+  S.cta = S.plan === 'year' ? 'y' : (S.offer === 'b' ? 'm7' : 'm3');
+  S.oc = S.offer === 'b' ? 'y' : 'm';
+  var k = KIT[S.role] || KIT.other;
+  document.querySelectorAll('.phone [data-tool]').forEach(function(el){ var i = k.indexOf(el.dataset.tool); el.style.display = i < 0 ? 'none' : ''; el.style.order = i; });
+  sbar();
+  if ([S.craft, S.rolepl, S.hero, S.cta, S.oc, S.plan].join('|') !== was) sync();
+};
+function sbar(){ var sb = document.querySelector('.sbar'); if (sb) sb.style.color = DARK[cur] ? 'white' : ''; }
+/* the walkthrough paints frames with tourAt(ms), which sets cur after sync: re-colour the status bar after each frame */
+(function(){ var f0; Object.defineProperty(window, 'tourAt', {configurable: true, get: function(){ return f0; },
+  set: function(f){ f0 = function(ms){ var r = f(ms); sbar(); return r; }; }}); })();
+window.onEnter = function(id, S){
+  if (id === 'beat' && !SHOT) S.play = '0';
+  sync();
+};
+</script>
+<script>
+/* ============ engine — generic, do not fork per app ============ */
+var C = JSON.parse(document.getElementById('content').textContent);
+var S = C.state, scr = {}, ORDER = [], hist = [], cur = null, Q = location.search;
+var SHOT = /[?&](shot|phone|tour)\b/.test(Q), HERO = /[?&]hero\b/.test(Q);
+/* a screen with data-aside (e.g. the paywall TODAY for the side-by-side) renders for stills but is not part of the flow */
+document.querySelectorAll('.scr').forEach(function(s){ scr[s.dataset.id] = s; if (!s.hasAttribute('data-aside')) ORDER.push(s.dataset.id); });
+if (/[?&]shot\b/.test(Q)) document.documentElement.classList.add('shot');
+if (/[?&]phone\b/.test(Q)) document.documentElement.classList.add('shot', 'phoneonly');
+if (/[?&]clear\b/.test(Q)) document.documentElement.classList.add('clear');
+var IDEAS = (C.ideas || []).length;
+
+/* ---- languages: markup is the first language; C.i18n[lang][data-t key] the others; {tokens} from C.prices[lang] ---- */
+var LANGS = C.langs || [], BASE = LANGS.length ? LANGS[0].code : 'en', LANG_DONE = BASE, BASE_LABELS = JSON.parse(JSON.stringify(C.labels || {}));
+if (!S.lang) S.lang = BASE;
+function fillP(s, l){ var P = (C.prices || {})[l] || {}; return String(s).replace(/\{(\w+)\}/g, function(m, k){ return k in P ? P[k] : m; }); }
+function applyLang(){
+  var l = S.lang || BASE; if (l === LANG_DONE) return;
+  var T = (C.i18n || {})[l] || {};
+  document.querySelectorAll('.phone [data-t]').forEach(function(el){
+    if (el._base == null) el._base = el.innerHTML;
+    el.innerHTML = l === BASE || T[el.dataset.t] == null ? el._base : fillP(T[el.dataset.t], l);
+  });
+  C.labels = JSON.parse(JSON.stringify(BASE_LABELS));
+  var LL = (C.labelsI18n || {})[l] || {}; Object.keys(LL).forEach(function(k){ C.labels[k] = LL[k]; });
+  LANG_DONE = l;
+}
+function setLang(l){
+  if (!LANGS.some(function(x){ return x.code === l; })) return;
+  S.lang = l; sync();
+  document.querySelectorAll('[data-setlang]').forEach(function(b){ b.classList.toggle('on', b.dataset.setlang === l); });
+  if (window.onLang) window.onLang(l);
+}
+
+function lab(key){ var v = S[key]; var L = C.labels[key]; if (Array.isArray(v)) return v.map(function(x){ return L && L[x] || x; }).join(', '); return (L && L[v]) || v; }
+function sync(){
+  applyLang();
+  document.querySelectorAll('[data-bind]').forEach(function(el){
+    var b = el.dataset.bind, m = b.split(':');
+    el.textContent = m[0] === 'label' ? lab(m[1]) : m[0] === 'count' ? (S[m[1]] || []).length : (S[b] == null ? '' : S[b]);
+  });
+  document.querySelectorAll('[data-pick]').forEach(function(el){ var p = el.dataset.pick.split(':'); el.classList.toggle('on', S[p[0]] === p[1]); });
+  document.querySelectorAll('[data-toggle]').forEach(function(el){ var p = el.dataset.toggle.split(':'); el.classList.toggle('on', (S[p[0]] || []).indexOf(p[1]) > -1); });
+  document.querySelectorAll('[data-requires]').forEach(function(el){ el.disabled = !(S[el.dataset.requires] || []).length; });
+  document.querySelectorAll('[data-show]').forEach(function(el){ var p = el.dataset.show.split(':'); el.style.display = String(S[p[0]]) === p[1] ? '' : 'none'; });
+  if (window.onSync) window.onSync(S);
+}
+function show(id, dir){
+  var from = scr[cur], to = scr[id]; if (!to || id === cur) return;
+  var sheet = to.classList.contains('sheet');
+  if (from){
+    from.classList.remove('is-active');
+    if (sheet) from.classList.add('under');                                   /* a sheet slides up over the screen that opened it */
+    else if (dir === 'fwd' && !from.classList.contains('sheet')) from.classList.add('is-past');
+  }
+  if (!sheet) Object.keys(scr).forEach(function(k){ var u = scr[k]; if (u !== to && u.classList.contains('under')) { u.classList.remove('under'); if (dir === 'fwd') u.classList.add('is-past'); } });
+  to.classList.remove('is-past', 'under'); to.classList.add('is-active'); cur = id;
+  paint(); if (window.onEnter) window.onEnter(id, S);
+}
+function go(id){ if (cur) hist.push(cur); show(id, 'fwd'); }
+function back(){ if (hist.length) { var p = hist.pop(); scr[cur].classList.remove('is-active'); show(p, 'back'); } }
+function jump(id){
+  Object.keys(scr).forEach(function(k){ scr[k].classList.add('nofx'); scr[k].classList.remove('is-active', 'is-past', 'under'); });
+  var i = ORDER.indexOf(id); hist = ORDER.slice(0, i < 0 ? 0 : i); cur = null;
+  ORDER.slice(0, i).forEach(function(k){ if (!scr[k].classList.contains('sheet')) scr[k].classList.add('is-past'); });
+  if (scr[id] && scr[id].classList.contains('sheet')) {                        /* jumping to a sheet: its opener stays visible under it */
+    for (var j = i - 1; j >= 0; j--) if (!scr[ORDER[j]].classList.contains('sheet')) { scr[ORDER[j]].classList.remove('is-past'); scr[ORDER[j]].classList.add('under'); break; }
+  }
+  show(id, 'jump');
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ Object.keys(scr).forEach(function(k){ scr[k].classList.remove('nofx'); }); }); });
+}
+function stepBy(d){ var i = ORDER.indexOf(cur) + d; if (i >= 0 && i < ORDER.length) jump(ORDER[i]); }
+function jumpTo(id){
+  var p = document.getElementById('prototype');
+  if (p && !document.documentElement.classList.contains('appmode')) p.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+  jump(id);
+}
+function paint(){
+  sync();
+  var c = document.getElementById('chips');
+  if (!c.childElementCount) ORDER.forEach(function(id){
+    var p = C.panel[id] || {}, b = document.createElement('button');
+    b.className = 'au-chip'; b.type = 'button'; b.dataset.id = id; b.setAttribute('role', 'tab');
+    b.innerHTML = (p.idea ? '<i>' + p.idea + '</i>' : '') + ((C.chips && C.chips[id]) || id);
+    b.onclick = function(){ jump(id); };
+    c.appendChild(b);
+  });
+  c.querySelectorAll('.au-chip').forEach(function(b){ var on = b.dataset.id === cur; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  var d = C.panel[cur] || {t: cur, why: ''}, n = ORDER.indexOf(cur) + 1;
+  document.getElementById('panel').innerHTML =
+    (d.idea ? '<div class="au-pn-k"><i></i>Idea ' + d.idea + ' of ' + IDEAS + '</div>' : '<div class="au-pn-k au-ctx"><i></i>Context</div>') +
+    '<h3 class="au-pn-t">' + d.t + '</h3><p class="au-pn-h">' + d.why + '</p>' +
+    (d.iv ? '<div class="au-pn-o"><div class="au-lab">Potential outcome · based on Adapty data</div><div class="au-val"><mark>' + d.iv + '</mark></div><div class="au-sub">' + (d.il || '') + '</div></div>' : '') +
+    (d.also ? '<p class="au-pn-a">' + d.also + '</p>' : '') +
+    '<div class="au-pn-nav"><button type="button" onclick="stepBy(-1)"' + (n <= 1 ? ' disabled' : '') + '>‹ Previous</button><span>Screen ' + n + ' of ' + ORDER.length + '</span><button type="button" onclick="stepBy(1)"' + (n === ORDER.length ? ' disabled' : '') + '>Next ›</button></div>';
+  var ab = document.getElementById('abT'); if (ab) ab.textContent = (d.idea ? 'Idea ' + d.idea + ' of ' + IDEAS + ' · ' : '') + (d.t || '');
+}
+document.addEventListener('click', function(e){
+  var j = e.target.closest('[data-jumpto]'); if (j){ e.preventDefault(); jumpTo(j.dataset.jumpto); return; }
+  var L = e.target.closest('[data-setlang]'); if (L){ setLang(L.dataset.setlang); return; }
+  if (e.target.closest('[data-langtoggle]') && LANGS.length > 1){ var k = LANGS.findIndex(function(x){ return x.code === S.lang; }); setLang(LANGS[(k + 1) % LANGS.length].code); return; }
+  var el = e.target.closest('[data-go],[data-back],[data-pick],[data-toggle]'); if (!el) return;
+  if (el.dataset.pick){ var p = el.dataset.pick.split(':'); S[p[0]] = p[1]; sync(); if (el.dataset.advance) setTimeout(function(){ go(el.dataset.advance); }, 170); return; }
+  if (el.dataset.toggle){ var q = el.dataset.toggle.split(':'), a = S[q[0]] = S[q[0]] || [], i = a.indexOf(q[1]); if (i > -1) a.splice(i, 1); else a.push(q[1]); sync(); return; }
+  if ('back' in el.dataset) return back();
+  go(el.dataset.go);
+});
+document.querySelectorAll('[data-input]').forEach(function(inp){
+  inp.value = S[inp.dataset.input] || ''; inp.addEventListener('input', function(){ S[inp.dataset.input] = inp.value.trim() || 'there'; sync(); });
+});
+function $(id){ return document.getElementById(id); }
+
+/* hero stills, shortlist, outcome, sources — from CONTENT */
+$('heroPhones').innerHTML = (C.hero || []).map(function(id, i){
+  var pos = ['l', 'c', 'r'][i] || 'r', t = (C.chips && C.chips[id]) || id;
+  return '<button class="au-hp au-' + pos + '" data-jumpto="' + id + '" aria-label="Open ' + t + '"><img src="assets/hero/' + id + '.png" alt=""></button>';
+}).join('');
+$('ideaList').innerHTML = (C.ideas || []).map(function(r, i){
+  return '<article class="au-idea"><div class="au-num">0' + (i + 1) + '</div><div><h3>' + r.title + '</h3><p>' + r.what + '</p>' +
+    '<button type="button" class="au-lnk" data-jumpto="' + r.screen + '">See it on the screen</button></div>' +
+    '<div class="au-imp"><div class="au-v"><mark>' + r.impact + '</mark></div><div class="au-l">' + r.il + '</div></div></article>';
+}).join('');
+var O = C.outcome || {};
+$('bandNums').innerHTML =
+  (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') +
+  (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '');
+$('bandFn').textContent = C.grounding;
+$('fine').textContent = C.grounding + ' Prepared by Adapty.';
+$('srcBody').innerHTML = C.sources.map(function(g){
+  return '<div><h4>' + g.group + '</h4><dl>' + g.items.map(function(it){ return '<dt>' + it.dt + '</dt><dd>' + it.dd + '</dd>'; }).join('') + '</dl></div>';
+}).join('');
+function openSrc(){ var d = $('srcDetails'); d.open = true; d.scrollIntoView({block: 'start'}); }
+
+/* ---- extras: language control, the paywall side by side, QR / phone view, the video ---- */
+if (LANGS.length > 1) {
+  $('langRow').hidden = false;
+  var lb = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.name + '</button>'; }).join('');
+  $('langSw').innerHTML = lb;
+  $('abLang').innerHTML = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.code.toUpperCase() + '</button>'; }).join('');
+}
+var CM = C.compare;
+if (CM && scr[CM.today] && scr[CM.proposed]) {
+  $('compare').hidden = false; $('navCompare').hidden = false;
+  $('cmpBody').innerHTML = '<div class="au-ideas-h"><p class="au-kicker">' + (CM.kicker || 'The paywall, side by side') + '</p><h2 class="au-h2">' + (CM.title || 'Today and proposed.') + (CM.sub ? ' <span>' + CM.sub + '</span>' : '') + '</h2></div>' +
+    '<div class="au-cmp"><figure><img src="assets/hero/' + CM.today + '.png" alt="Your paywall today"><figcaption>Today <span>· ' + (CM.todayCap || 'rebuilt from your recording') + '</span></figcaption></figure>' +
+    '<ol class="au-chg">' + (CM.rows || []).map(function(r){
+      return '<li><h4>' + r.h + (r.idea ? ' <i>Idea ' + r.idea + '</i>' : '') + '</h4><span class="au-was"><em>Today</em>' + r.was + '</span><span class="au-now"><em>Proposed</em>' + r.now + '</span></li>';
+    }).join('') + '</ol>' +
+    '<figure><button type="button" class="au-cmp-go" data-jumpto="' + CM.proposed + '" aria-label="Open the proposed paywall"><img src="assets/hero/' + CM.proposed + '.png" alt="The proposed paywall"></button><figcaption>Proposed <span>· tap to try it</span></figcaption></figure></div>' +
+    (CM.kept ? '<p class="au-kept">' + CM.kept + '</p>' : '');
+}
+if (C.liveUrl) { $('qrCard').hidden = false; $('qrMob').hidden = false; }
+if (/[?&]app\b/.test(Q)) {
+  var H0 = document.documentElement; H0.classList.add('appmode');
+  var openP = function(o){ H0.classList.toggle('au-open', o); $('abWhy').querySelector('em').textContent = o ? 'Close ↓' : 'Why ↑'; };
+  $('abWhy').onclick = function(){ openP(!H0.classList.contains('au-open')); };
+  $('abScrim').onclick = function(){ openP(false); };
+}
+if (C.video) {
+  var dlg = $('vid'), vel = $('vidEl'); vel.src = C.video; if (C.poster) vel.poster = C.poster; $('vidDl').href = C.video;
+  $('heroVideo').hidden = false;
+  $('heroVideo').onclick = function(){ dlg.showModal(); vel.play().catch(function(){}); };
+  $('vidX').onclick = function(){ dlg.close(); };
+  dlg.addEventListener('close', function(){ vel.pause(); });
+  dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+}
+
+/* ---- ?tour: a deterministic walkthrough from C.tour — tourAt(ms) paints one frame; record-video.sh records it ---- */
+function tourInit(){
+  var T = C.tour, H = document.documentElement, TR = T.transition || 360;
+  H.classList.add('tourmode', 'shot'); document.body.classList.add('nofx');
+  var SEG = T.segments, START = [], STATE = [], UNDER = [], acc = 0, st = JSON.parse(JSON.stringify(C.state));
+  SEG.forEach(function(s, i){
+    START.push(acc); acc += s.d;
+    Object.keys(s.st || {}).forEach(function(k){ st[k] = s.st[k]; }); STATE.push(JSON.parse(JSON.stringify(st)));
+    var u = null; if (scr[s.id].classList.contains('sheet')) for (var j = i - 1; j >= 0; j--) if (!scr[SEG[j].id].classList.contains('sheet')) { u = SEG[j].id; break; }
+    UNDER.push(u);
+  });
+  var TOTAL = acc, capEl = $('tCap'), tap = $('tTap'), pressed = null, popped = [];
+  $('tIntro').innerHTML = '<p class="au-eyebrow"><i></i>' + document.querySelector('.au-top-hero .au-eyebrow').textContent + '</p><h1 class="au-display">' + C.app + '</h1>' +
+    '<p class="au-lede">' + (T.introLede || document.querySelector('.au-top-hero .au-lede').innerHTML) + '</p>';
+  $('tEnd').innerHTML = '<p class="au-eyebrow"><i></i>Growth Audit · ' + C.app + '</p><h2 class="au-te-h">' + (T.endTitle || 'Five ideas, built into your own onboarding.') + '</h2>' +
+    '<div class="au-te-n">' + (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') + (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '') + '</div>' +
+    (C.liveUrl ? '<div class="au-te-q"><img src="assets/qr-app.png" alt=""><div><b>Try it on your phone</b><span>' + C.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') + '</span></div></div>' : '') +
+    '<p class="au-te-f">' + C.grounding + '</p>';
+  function ease(x){ return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+  function easeBack(x){ var c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); }
+  function capHTML(c){
+    c = c || {k: '', t: '', l: ''};
+    return '<div class="au-tk' + (c.n ? '' : ' au-ctx') + '"><i></i>' + (c.n ? 'Idea ' + c.n + ' of ' + IDEAS : (c.k || 'Context')) + '</div><h2 class="au-tt">' + c.t + '</h2><p class="au-tl">' + (c.l || '') + '</p>' +
+      (c.o ? '<div class="au-to"><small>Potential outcome · based on Adapty data</small><b><mark>' + c.o + '</mark></b><span>' + (c.ol || '') + '</span></div>' : '');
+  }
+  function place(id, tf, z){ scr[id].style.transform = tf; scr[id].style.zIndex = z; }
+  window.TOUR_MS = TOTAL;
+  window.tourAt = function(ms){
+    ms = Math.max(0, Math.min(TOTAL - 1, ms));
+    var i = 0; while (i < SEG.length - 1 && ms >= START[i + 1]) i++;
+    var s = SEG[i], local = ms - START[i], prev = i > 0 ? SEG[i - 1] : null;
+    Object.keys(STATE[i]).forEach(function(k){ S[k] = STATE[i][k]; }); sync();
+    var moving = prev && prev.id !== s.id && local < TR, p = moving ? ease(local / TR) : 1;
+    Object.keys(scr).forEach(function(k){ scr[k].classList.remove('is-active', 'is-past', 'under'); place(k, 'translateX(100%)', 0); });
+    var B = scr[s.id];
+    if (moving) {
+      if (B.classList.contains('sheet')) { place(prev.id, 'none', 1); B.style.transform = 'translateY(' + (1 - p) * 100 + '%)'; }
+      else {
+        var slide = 'translateX(' + (-28 * p) + '%)'; place(prev.id, slide, 1); B.style.transform = 'translateX(' + (1 - p) * 100 + '%)';
+        if (UNDER[i - 1]) place(UNDER[i - 1], slide, 0);
+      }
+    } else B.style.transform = 'none';
+    B.style.zIndex = 2;
+    if (UNDER[i] && !moving) place(UNDER[i], 'none', 1);
+    /* optional reveal: s.pop scales an element in, s.reveal fades one in a beat later */
+    popped.forEach(function(e){ e.style.transform = ''; e.style.opacity = ''; }); popped = [];
+    var q = Math.max(0, Math.min(1, (local - 250) / 550));
+    if (s.pop) { var pe = B.querySelector(s.pop); if (pe) { pe.style.transform = 'scale(' + (.55 + .45 * easeBack(q)) + ')'; pe.style.opacity = Math.min(1, q * 1.6); popped.push(pe); } }
+    if (s.reveal) { var re = B.querySelector(s.reveal); if (re) { re.style.opacity = Math.max(0, Math.min(1, (local - 520) / 300)); popped.push(re); } }
+    /* caption crossfades at screen changes; waits for the intro, gives way to the end card */
+    var key = s.id, op = 1;
+    if (moving) { if (p < .5) { key = prev.id; op = 1 - p * 2; } else op = p * 2 - 1; }
+    if (capEl.dataset.k !== key) { capEl.innerHTML = capHTML(T.captions[key]); capEl.dataset.k = key; }
+    var io = ms < 1100 ? 1 : Math.max(0, 1 - (ms - 1100) / 300), eo = s.end ? Math.min(1, local / 350) : 0;
+    capEl.style.opacity = op * Math.max(0, Math.min(1, (ms - 1400) / 300)) * (1 - eo);
+    /* the finger: fades in, taps, ripples out. Selectors are scoped to the screen */
+    tap.style.opacity = 0; if (pressed) { pressed.style.opacity = ''; pressed = null; }
+    if (s.tap) {
+      var el = B.querySelector(s.tap[0]), dt = local - s.tap[1];
+      if (el && dt > -260 && dt < 420) {
+        var r = el.getBoundingClientRect();
+        tap.style.left = (r.left + r.width / 2) + 'px'; tap.style.top = (r.top + r.height / 2) + 'px';
+        if (dt < 0) { tap.style.opacity = (dt + 260) / 260 * .9; tap.style.transform = 'scale(1)'; }
+        else { tap.style.opacity = .9 * (1 - dt / 420); tap.style.transform = 'scale(' + (1 + dt / 420 * .9) + ')'; }
+        if (dt >= 0 && dt < 160) { el.style.opacity = .72; pressed = el; }
+      }
+    }
+    $('tIntro').style.opacity = T.intro === false ? 0 : io;
+    $('tEnd').style.opacity = eo;
+    $('tProg').style.width = (ms / TOTAL * 100) + '%';
+    cur = s.id;
+    return i;
+  };
+  var tm = /[?&]t=(\d+)/.exec(Q); tourAt(tm ? +tm[1] : 0);
+}
+
+/* boot: #<screen-id> deep-links a screen (shoot.sh / hero-stills.sh use it); ?lang=xx picks the language */
+(function(){
+  var lm = /[?&]lang=(\w+)/.exec(Q); if (lm) setLang(lm[1]); else setLang(S.lang);
+  var h = location.hash.slice(1);
+  jump(scr[h] ? h : ORDER[0]);
+  if (scr[h] && !SHOT && !document.documentElement.classList.contains('appmode')) setTimeout(function(){ $('prototype').scrollIntoView(); }, 0);
+  if (/[?&]tour\b/.test(Q) && C.tour) tourInit();
+})();
+</script>
+</body>
+</html>
