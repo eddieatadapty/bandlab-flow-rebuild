@@ -905,7 +905,7 @@ html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-ev
      EXTRAS (each one hides itself when left empty):
      langs  : [{"code":"en","name":"English"},{"code":"es","name":"Español · Spain prices"}] — first = the markup's language
      i18n   : {"es": {"<data-t key>": "text with {tokens}"}} — every data-t key, for every language after the first
-     prices : {"es": {"yr": "39,99 €", …}} — {tokens} in i18n strings; that storefront's real IAP prices
+     prices : {"es": {"yr": "$39.99", …}} — {tokens} in i18n strings; that storefront's real IAP prices
      labelsI18n: {"es": {"goal": {"a": "…"}}} — C.labels per language (data-bind="label:…")
      liveUrl: final Pages URL (QR card + video end card); the QR file encodes liveUrl + "?app"
      video / poster: "assets/walkthrough.mp4" / "assets/walkthrough-poster.jpg" (record-video.sh)
@@ -1104,7 +1104,7 @@ html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-ev
   },
   {
    "code": "fr",
-   "name": "Français · prix France"
+   "name": "Français"
   }
  ],
  "i18n": {
@@ -1163,7 +1163,7 @@ html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-ev
    "b_h": "Choisissez un beat pour votre premier morceau",
    "b_s": "Des beats premium du store BandLab Beats, offerts aux membres.",
    "b_meta": "Fahrenheit · Dance",
-   "b_free": "Offert",
+   "b_free": "Offert <s>{beat}</s>",
    "b_fy": "Pour vous",
    "b_cta": "Utiliser ce beat",
    "b_fn": "Commencez votre premier morceau dessus dans Studio.",
@@ -1192,15 +1192,15 @@ html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-ev
    "k_fn": "Faire de la musique sur BandLab reste gratuit.",
    "p_h1": "Emmenez vos",
    "p_h2": "plus loin avec BandLab Membership",
-   "p_proof": "<b>★ 4,7</b> 31 678 notes · Finaliste App de l’année 2025",
+   "p_proof": "<b>★ 4,7</b> 511 k notes · Finaliste App de l’année 2025",
    "tc_vc": "Voice Cleaner",
    "tc_ap": "Effets AutoPitch",
    "tc_midi": "Audio-to-MIDI",
    "tc_mst": "Mastering",
    "tc_beats": "Beats offerts",
-   "pa_pill": "−{save} vs mensuel",
+   "pa_pill": "−{save} la première année",
    "pa_y": "Annuel, {yrpm} / mois",
-   "pa_ys": "{yr} par an, facturé chaque année",
+   "pa_ys": "{yr1} la première année, puis {yr}/an",
    "pa_m": "Mensuel, {mo} / mois",
    "pa_ms": "Essai gratuit de 3 jours",
    "pb_t1": "Aujourd’hui",
@@ -1212,20 +1212,20 @@ html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-ev
    "pb_pill": "7 jours offerts",
    "pb_m": "Mensuel, {mo} / mois",
    "pb_ms": "Essai gratuit de 7 jours",
-   "pb_y": "Annuel, {yr} / an",
-   "pb_ys": "soit {yrpm} / mois",
-   "pc_pill": "−{save} vs mensuel",
+   "pb_y": "Annuel, {yr1} / an",
+   "pb_ys": "{yr} après la première année",
+   "pc_pill": "−{save} la première année",
    "pc_k": "BandLab Membership · Annuel",
    "pc_big": "{yrpm}",
    "pc_per": "/ mois",
-   "pc_s": "{yr} facturés une fois par an",
+   "pc_s": "{yr1} la première année, puis {yr}/an",
    "pc_perk": "2 beats premium offerts chaque mois",
    "pc_alt": "Plutôt au mois ?",
    "pc_alt2": "{mo}/mois, 3 jours offerts",
    "cta_y": "Devenir membre",
    "cta_m3": "Essai gratuit de 3 jours",
    "cta_m7": "Essai gratuit de 7 jours",
-   "fine_y": "{yr} aujourd’hui. Renouvelé chaque année. Annulable à tout moment.",
+   "fine_y": "{yr1} aujourd’hui. Renouvelé à {yr}/an. Annulable à tout moment.",
    "fine_m3": "Gratuit pendant 3 jours, puis {mo}/mois. Annulable à tout moment.",
    "fine_m7": "Gratuit pendant 7 jours, puis {mo}/mois. Annulable à tout moment.",
    "l1": "Conditions",
@@ -1236,7 +1236,7 @@ html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-ev
    "om_p": "Mensuel, {mo} / mois",
    "om_ps": "Essai gratuit de 3 jours",
    "oy_h": "Plutôt payer une fois par an ?",
-   "oy_s": "{yr} par an, c’est {yrpm} par mois, {save} de moins qu’au mois.",
+   "oy_s": "{yr1} la première année, c’est {yrpm} par mois, {save} de moins qu’au mois.",
    "o_no": "Non merci, je continue gratuitement",
    "n_later": "Plus tard",
    "n_h": "Activez les notifications",
@@ -1246,10 +1246,12 @@ html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-ev
  },
  "prices": {
   "fr": {
-   "yr": "179,99 €",
-   "yrpm": "15,00 €",
-   "mo": "17,99 €",
-   "save": "17 %"
+   "yr": "$149.99",
+   "yr1": "$99.99",
+   "yrpm": "$8.33",
+   "mo": "$14.99",
+   "save": "44 %",
+   "beat": "$20"
   }
  },
  "labelsI18n": {
@@ -1570,12 +1572,8 @@ html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-ev
      "dd": "Your App Store screenshot 5 (“State Of Trance · Fahrenheit · Dance… Free $20”)."
     },
     {
-     "dt": "France: 17,99 € · 179,99 €",
-     "dd": "“BandLab Membership Pro - 1 Month” and “- 12 Months” on the <a href=\"https://apps.apple.com/fr/app/bandlab-music-maker-beats/id968585775\" target=\"_blank\" rel=\"noopener\">France listing</a>. 179,99 € ÷ 12 = 15,00 € a month; 17,99 € × 12 = 215,88 €, so 17% less. We couldn’t see a French first-year price, so the French version shows 179,99 € and no first-year offer."
-    },
-    {
      "dt": "Not used",
-     "dd": "“BandLab Membership Max” (1 Month and 12 Months) is listed on other storefronts (34,99 € a month in Germany and Italy, for example) but no US or French price is visible, so plan mix C uses annual and monthly only. Boost purchases ($3–$20) aren’t subscriptions."
+     "dd": "“BandLab Membership Max” (1 Month and 12 Months) is listed on other storefronts (Germany, Italy, Japan, Brazil) but no US price is visible, so plan mix C uses annual and monthly only. Boost purchases ($3–$20) aren’t subscriptions."
     }
    ]
   },
@@ -1584,7 +1582,7 @@ html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-ev
    "items": [
     {
      "dt": "4.7 from 511K ratings",
-     "dd": "US App Store listing: 4.74 from 510,527 ratings. France: 4.67 from 31,678 ratings, shown on the French paywall."
+     "dd": "US App Store listing: 4.74 from 510,527 ratings, shown in both languages."
     },
     {
      "dt": "App of the Year 2025 Finalist",
